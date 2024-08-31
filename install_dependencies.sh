@@ -14,7 +14,7 @@ npm install -g expo-cli
 
 #Instalar librerías de routing conocidas (que permitan routing en la aplicación)
 echo "Instalando librerías que permitan routing en aplicación"
-npx expo install react-native-screens react-native-safe-area-context
+npx expo install react-native-screens react-native-safe-area-context react-native-gesture-handler
 
 #Iniciar el proyecto
 echo "Ejecutando expo para iniciar proyecto"
