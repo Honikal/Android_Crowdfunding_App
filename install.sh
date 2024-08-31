@@ -14,7 +14,7 @@ sleep 5
 
 #Iniciar proyecto como expo
 echo "Iniciar proyecto con expo (elegir plantilla recomendada)"
-expo init . --template minimal
+expo init . --template blank
 
 #Sleep por 5 segundos para asegurar que el proyecto esté inicializado
 sleep 5
@@ -28,7 +28,7 @@ sleep 5
 
 #Instalar librería de routing conocida
 echo "Instalando librerías de routing"
-npx expo install react-native-screens react-native-safe-area-context
+npx expo install react-native-screens react-native-safe-area-context react-native-gesture-handler
 
 #Sleep por 10 segundos para asegurar las librerías estén instaladas
 sleep 10
