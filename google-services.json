@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "283620534285",
+    "firebase_url": "https://crowd-funding-app-46230-default-rtdb.firebaseio.com",
+    "project_id": "crowd-funding-app-46230",
+    "storage_bucket": "crowd-funding-app-46230.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:283620534285:android:66029a6e28fc1bd26b4d44",
+        "android_client_info": {
+          "package_name": "Crowdfunding.App"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBr5uo7P_U-Hxs1jyeuLHZp-tszvvvy8Q8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
