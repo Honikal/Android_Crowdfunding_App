@@ -12,8 +12,10 @@ export default class UsuarioEntidad {
         this.#dbRef = ref(this.#db, "users");
     }
 
+    //GET Usuario
     /**
      * Función encargada de retornar la lista completa de usuarios dentro del sistema como tal
+     * @async
      * @returns {Promise<Usuario>}                    - Retorna true si encuentra un usuario con ese correo, sino, no retorna false
      */
     async getUsuarios() {
@@ -39,6 +41,7 @@ export default class UsuarioEntidad {
         }
     }
 
+    //ADD Usuario
     /**
      * Función encargada de agregar un usuario a la base de datos
      * @async
@@ -67,4 +70,24 @@ export default class UsuarioEntidad {
             throw error;
         }
     }
+
+    //EDIT Usuario
+    /**
+     * Función encargada de aplicar cambios en el sistema al usuario
+     * @async
+     * @param {string} idUsuario             - ID del usuario a modificar
+     * @param {data}   datosActualizar       - Struct con distintos datos del objeto a modificar
+     * @returns {void} No retorna nada, nada más aplica los cambios e imprime un console.log() verificando los cambios
+     */
+    async editUsuario(idUsuario, datosActualizar){
+        try {
+            const usuarioRef = ref(this.#db, `users/${idUsuario}`);
+            await update(usuarioRef, datosActualizar);
+            console.log("Usuario actualizado en el sistema");
+        } catch (error) {
+            console.error("Error desde la capa entidad intentando modificar al usuario: ", error);
+            throw error;
+        }
+    }
+
 }
