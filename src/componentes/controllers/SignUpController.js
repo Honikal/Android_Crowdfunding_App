@@ -103,6 +103,8 @@ export default class SignUp_Ctrl{
 
                 //Enviamos el correo una vez se ha registrado el usuario
                 const emailSender = new EmailSender();
+
+                /*
                 emailSender.sendEmail(
                     this.#usuario.getCorreo, 
                     'Bienvenido a Crowdfounder',
@@ -111,6 +113,7 @@ export default class SignUp_Ctrl{
                     'de su proyecto. Por favor, siéntase cómodo usando nuestra aplicación y observando distintas posibilidades. ' +
                     'Y una vez más, muchas gracias por unirse a la plataforma.'
                 );
+                */
 
                 return this.#usuario;
             } else {
