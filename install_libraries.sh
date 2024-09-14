@@ -12,5 +12,5 @@ npm install react-native-masked-text
 #Instalar librería de expo para acceder a constantes nivel app, como .envs
 expo install expo-constants
 
-#Instalar librería que nos permite comunicarnos con la API que envía correos
+
 
