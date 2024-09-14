@@ -2,12 +2,15 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
+//Importamos el logo
+import Logo from '../../../../assets/logo.png';
+
 const Header = () => {
   return (
     <View style={styles.header}>
       {/* Logo */}
       <View style={styles.logoContainer}>
-        <Image source={require('../../assets/logo.png')} style={styles.logo} />
+        <Image source={Logo} style={styles.logo} />
         <Text style={styles.logoText}>Crowdfounder</Text>
       </View>
       
