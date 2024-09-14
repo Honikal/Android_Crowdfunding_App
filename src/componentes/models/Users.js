@@ -2,10 +2,10 @@ export default class Usuario{
     //A diferencia, acá no podemos asignar más de 1 constructor, pero se pueden definir valores default
     #idUsuario
     #admin
-    #nombreCompleto
+    #nombre
     #cedula
     #areaTrabajo
-    #cantidadBolsillo
+    #cantDineroBolsillo
     #telefono
     #correo
     #password
@@ -15,10 +15,10 @@ export default class Usuario{
      * Constructor de clase Usuario
      * @param {string} idUsuario            - ID única generada al ser guardado en RealTime Database de firebase
      * @param {string} admin                - Nombre completo del usuario
-     * @param {string} nombre_completo      - Nombre completo del usuario
+     * @param {string} nombre               - Nombre completo del usuario
      * @param {string} cedula               - Valor id del usuario para identificar
      * @param {string} areaTrabajo          - Departamento en el cual está trabajando
-     * @param {string} cantidad_bolsillo    - Departamento en el cual está trabajando
+     * @param {string} cantDineroInicial    - Departamento en el cual está trabajando
      * @param {string} telefono             - Correo electrónico de trabajo
      * @param {string} correo               - Correo electrónico de trabajo
      * @param {string} password             - Correo electrónico de trabajo
@@ -26,10 +26,10 @@ export default class Usuario{
 
     constructor (
         idUsuario = '',
-        nombre_completo = '',
+        nombre = '',
         cedula = '',
         areaTrabajo = '',
-        cantidad_bolsillo = 0.0,
+        cantDineroInicial = 0.0,
         telefono = '',
         correo = '',
         password = '',
@@ -37,10 +37,10 @@ export default class Usuario{
     ){
         this.#idUsuario = idUsuario,
         this.#admin = admin
-        this.#nombreCompleto = nombre_completo,
+        this.#nombre = nombre,
         this.#cedula = cedula
         this.#areaTrabajo = areaTrabajo,
-        this.#cantidadBolsillo = cantidad_bolsillo,
+        this.#cantDineroBolsillo = cantDineroInicial,
         this.#telefono = telefono,
         this.#correo = correo,
         this.#password = password
@@ -50,8 +50,8 @@ export default class Usuario{
     get getIdUsuario(){
         return this.#idUsuario;
     }
-    get getNombreCompleto(){
-        return this.#nombreCompleto;
+    get getNombre(){
+        return this.#nombre;
     }
     get getCedula(){
         return this.#cedula;
@@ -68,11 +68,8 @@ export default class Usuario{
     get getAreaTrabajo(){
         return this.#areaTrabajo;
     }
-    get getCantidadBolsillo(){
-        return this.#cantidadBolsillo;
-    }
-    get getTelefono(){
-        return this.#telefono
+    get getCantDineroBolsillo(){
+        return this.#cantDineroBolsillo;
     }
     get isAdmin(){
         return this.#admin
@@ -87,7 +84,6 @@ export default class Usuario{
         */
         this.#idUsuario = value
     }
-
     set setCorreo(value) {
         /**
          * setter correo electronico
@@ -95,23 +91,6 @@ export default class Usuario{
         */
         this.#correo = value
     }
-
-    set setTelefono(value){
-        /**
-         * setter numero de teléfono
-         * @param {string} value     - Valor de entrada que debe ser el nuevo número de teléfono
-        */
-        this.#telefono = value
-    }
-
-    set setAreaTrabajo(value){
-        /**
-         * setter departamento de trabajo
-         * @param {string} value     - Valor de entrada que debe ser el nuevo departamento en el que trabaja
-        */
-        this.#areaTrabajo = value
-    }
-
     set setPassword(value){
         /**
          * setter estado de usuario en proyectos
@@ -119,7 +98,27 @@ export default class Usuario{
         */
         this.#password = value;
     }
-
+    set setTelefono(value){
+        /**
+         * setter numero de teléfono
+         * @param {string} value     - Valor de entrada que debe ser el nuevo número de teléfono
+        */
+        this.#telefono = value
+    }
+    set setAreaTrabajo(value){
+        /**
+         * setter departamento de trabajo
+         * @param {string} value     - Valor de entrada que debe ser el nuevo departamento en el que trabaja
+        */
+        this.#areaTrabajo = value
+    }
+    get getCantDineroBolsillo(){
+        /**
+         * setter cantidad de dinero en el bolsillo
+         * @param {float} value     - Valor de entrada que debe ser un aproximado al dinero inicial que tiene un usuario en el bolsillo
+        */
+        return this.#cantDineroBolsillo;
+    }
     set setAdmin(value){
         /**
          * setter estado de usuario en proyectos
@@ -132,11 +131,11 @@ export default class Usuario{
         const usuarioData = `
             Admin: ${this.isAdmin}
             Usuario ID: ${this.#idUsuario}
-            Nombre Completo: ${this.#nombreCompleto}
+            Nombre Completo: ${this.#nombre}
             Cédula: ${this.getCedula}
             Departamento de Trabajo: ${this.getAreaTrabajo}
             Correo: ${this.getCorreo}
-            Dinero en bolsillo: ${this.getCantidadBolsillo}
+            Dinero en bolsillo: ${this.getCantDineroBolsillo}
             Número de Teléfono: ${this.getTelefono}
         `;
         console.log(usuarioData);
