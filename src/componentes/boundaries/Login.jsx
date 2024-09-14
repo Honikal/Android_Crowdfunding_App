@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from "react";
 import{
     View,
@@ -134,12 +135,26 @@ const Login = () => {
             <TouchableOpacity style={styles.navigateContainer} onPress={navigateToSignUp}>
                 <Text style={styles.navigate}>Register now</Text>
             </TouchableOpacity>
+=======
+import React from "react";
+import{
+    View,
+    Text,
+    StyleSheet,
+} from 'react-native'
+
+const Login = () => {
+    return(
+        <View style={styles.container}>
+            <Text>Open up App.js to start working on your app!</Text>
+>>>>>>> 6c4015c982ae1a1e8b3df49b9ccda893c932de88
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
+<<<<<<< HEAD
       width: '100%',
       flexGrow: 1,
       backgroundColor: '#A8CEFF',
@@ -206,6 +221,13 @@ const styles = StyleSheet.create({
     navigate: {
         color: '#FEFEFE'
     },
+=======
+      flex: 1,
+      backgroundColor: '#fff',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+>>>>>>> 6c4015c982ae1a1e8b3df49b9ccda893c932de88
   });
 
 export default Login;
