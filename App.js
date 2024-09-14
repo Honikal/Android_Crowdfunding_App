@@ -5,6 +5,9 @@ import Login from './src/componentes/boundaries/Login';
 import SignUp from './src/componentes/boundaries/SignUp';
 import InitialPage from './src/componentes/boundaries/InitialPage';
 
+import SearchPage from './src/componentes/boundaries/SearchPage';
+import NewProjectPage from './src/componentes/boundaries/NewProjectPage';
+
 //Sistema para implementar navegación
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
@@ -32,7 +35,18 @@ export default function App() {
           options={{headerShown: false}}
           initialParams={{ usuarioActual: null }}
         />
-
+        <Stack.Screen
+          name='Busqueda'
+          component={SearchPage}
+          options={{headerShown: false}}
+          initialParams={{ usuarioActual: null }}
+        />
+        <Stack.Screen
+          name='Crear Proyecto'
+          component={NewProjectPage}
+          options={{headerShown: false}}
+          initialParams={{ usuarioActual: null }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   )

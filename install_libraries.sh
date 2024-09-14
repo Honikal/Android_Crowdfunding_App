@@ -14,7 +14,6 @@ npm install @react-navigation/stack
 npm install react-native-masked-text
 
 #Instalar librería de expo para acceder a constantes nivel app, como .envs
-expo install expo-constants
-
+npx expo install expo-constants
 
 

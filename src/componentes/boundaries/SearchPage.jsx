@@ -10,20 +10,13 @@ import{
 } from 'react-native'
 
 //Importamos el tab superior de la pantalla
-import UpTab from "./styleComponents/UpTab";
-import DownTab from "./styleComponents/DownTab";
-
-import Header from "./styleComponents/Header";
-
-
 
 //Importamos el sistema de navegación
 import { useNavigation, useIsFocused } from '@react-navigation/native'
 
-const InitialPage = ( { route } ) => {
+const SearchPage = ( { route } ) => {
     //Recibimos el parámetro como tal
     const { usuarioActual } = route.params;
-
 
     //Instanciamos la constante de navegación
     const navigation = useNavigation();
@@ -31,21 +24,9 @@ const InitialPage = ( { route } ) => {
 
     //Checar que se estén cargando los datos en el sistema en la página
     return(
-        <View>
-            <UpTab
-                usuarioActual={usuarioActual}
-            />
-            {/*<Header></Header>*/}
-            <View style={styles.container}>
-                <Text>Pagina Inicial</Text>
-            </View>
-
-            <DownTab
-                usuarioActual={usuarioActual}
-                paginaActual={"Pagina Inicial"}
-            />
+        <View style={styles.container}>
+            <Text>Pagina Busqueda</Text>
         </View>
-
     )
 }
 
@@ -65,7 +46,6 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
     },
-
 });
 
-export default InitialPage;
+export default SearchPage;

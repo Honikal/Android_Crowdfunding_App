@@ -13,6 +13,7 @@ import{
     //Si el usuario da click por fuera, se cierra
     TouchableWithoutFeedback
 } from 'react-native'
+import Constants from "expo-constants";
 
 //Importamos objetos gráficos
 import Logo from '../../../../assets/logo.png';
@@ -23,6 +24,9 @@ import { useNavigation } from '@react-navigation/native';
 export default UpTab = ({ usuarioActual }) => {
     //State para manejar que el modal esté encendido
     const [dropdownVisible, setDropdownVisible] = useState(false);
+
+    console.log("Usuario actual pasado en el up tab");
+    usuarioActual.showData();
 
     //Insertamos la constante de navegación
     const navigation = useNavigation();
@@ -58,21 +62,20 @@ export default UpTab = ({ usuarioActual }) => {
 
     return (
         <TouchableWithoutFeedback onPress={() => setDropdownVisible(false)}>
-            <View style={styles.upTab}>
-                <Image
-                    source={Logo}
-                    style= {styles.logo}
-                    resizeMode= {"contain"}
-                />
-                <Text style={styles.title}> Gestionador Proyectos </Text>
+            <View style={[styles.upTab]}>
+                <View style={styles.logoContainer}>
+                    <Image
+                        source={Logo}
+                        style= {styles.logo}
+                        resizeMode= {"contain"}
+                    />
+                    <Text style={styles.logoText}>Crowdfounder</Text>
+                </View> 
+                <TouchableOpacity onPress={pressButtonUsuario} style={styles.profileButton}>
+                    <Text style={styles.botonUsuarioText}>{obtenerPrimeraLetra()}</Text>
+                </TouchableOpacity>
+
                 
-                {
-                    /*
-                    <TouchableOpacity onPress={pressButtonUsuario} style={styles.botonUsuario}>
-                        <Text style={styles.botonUsuarioText}>{obtenerPrimeraLetra()}</Text>
-                    </TouchableOpacity>
-                    */
-                }
                 
             
 
@@ -104,18 +107,19 @@ const styles = StyleSheet.create({
     //Sección tab arriba
     upTab: {
         //Orden del campo
+        flexGrow: 1,
+
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        height: '11%',
         width: '100%',
 
-        paddingHorizontal: 20,
+        paddingHorizontal: 15,
         paddingVertical: 10,
         zIndex: 10,   //Hacemos que siempre se coloca arriba
 
         //Colores como tal y bordes
-        backgroundColor: '#f9f9f9',
+        backgroundColor: '#ECF7FD',
         borderWidth: 1,
         borderColor: '#ccc',
 
@@ -128,29 +132,53 @@ const styles = StyleSheet.create({
         shadowOffset: {width: 0, height: 4},
         shadowRadius: 4
     },
+
+    logoContainer : {
+        marginTop: Constants.statusBarHeight,
+
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: normalize(5),
+
+        //borderWidth: 3,
+        //borderColor: '000',   
+    },
     logo: {
-        width: '25%',
-        aspectRatio: 5/4,
+        width: normalize(50),
+        height: normalize(50),
+
+        //borderWidth: 3,
+        //borderColor: '#589389',   
     },
-    title: {
-        fontSize: normalize(20),
+    logoText: {
+        fontSize: normalize(18),
+        fontWeight: 'bold',
+        color: '#75A1DE'
     },
 
+    profileButton: {
+        marginTop: Constants.statusBarHeight,
 
-
-    botonUsuario: {
-        borderRadius: normalize(24),
-        borderWidth: 1,
-        padding: normalize(15),
         width: normalize(48),
         height: normalize(48),
-        backgroundColor: '#454986',
+
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        padding: normalize(10),
+        
+        backgroundColor: '#75A1DE',
+
+        borderRadius: normalize(24),
+        borderWidth: 1,
+        borderTopColor: '#A8CEFF',
+        borderRightColor: '#A8CEFF',
+        borderBottomColor: '#75A1DE',
+        borderLeftColor: '#75A1DE',
     },
     botonUsuarioText: {
-        color: '#fff',
-        fontSize: normalize(18),
+        color: '#ECF7FD',
+        fontSize: normalize(19),
+        fontWeight: 'bold',
         textTransform: 'uppercase',
         lineHeight: normalize(18)
     },

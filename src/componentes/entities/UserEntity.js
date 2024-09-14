@@ -83,7 +83,7 @@ export default class UsuarioEntidad {
         try {
             const usuarioRef = ref(this.#db, `users/${idUsuario}`);
             await update(usuarioRef, datosActualizar);
-            console.log("Usuario actualizado en el sistema");
+            console.log("Confirmación capa entidad de actualización del usuario");
         } catch (error) {
             console.error("Error desde la capa entidad intentando modificar al usuario: ", error);
             throw error;

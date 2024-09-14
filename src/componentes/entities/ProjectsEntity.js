@@ -63,7 +63,23 @@ export default class ProyectoEntidad {
     }
 
     //EDIT Proyecto
-    
+    /**
+     * Función encargada de aplicar cambios en el sistema al proyecto
+     * @async
+     * @param {string} idProyecto            - ID del proyecto a modificar
+     * @param {data}   datosActualizar       - Struct con distintos datos del objeto a modificar
+     * @returns {void} No retorna nada, nada más aplica los cambios e imprime un console.log() verificando los cambios
+     */
+    async editProyecto(idProyecto, datosActualizar){
+        try {
+            const proyectoRef = ref(this.#db, `projects/${idProyecto}`);
+            await update(proyectoRef, datosActualizar);
+            console.log("Confirmación capa entidad de actualización del proyecto");
+        } catch (error) {
+            console.error("Error desde la capa entidad intentando modificar el proyecto: ", error);
+            throw error;
+        }
+    }
 
 
 }
