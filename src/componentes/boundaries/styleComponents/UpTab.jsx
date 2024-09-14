@@ -15,7 +15,7 @@ import{
 } from 'react-native'
 
 //Importamos objetos gráficos
-import Logo from '../../../recursos/logo.png';
+import Logo from '../../../../assets/logo.png';
 
 //Importamos el método de navegación
 import { useNavigation } from '@react-navigation/native';
