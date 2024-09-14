@@ -15,7 +15,7 @@ import{
 } from 'react-native'
 
 //Importamos objetos gráficos
-import Logo from '../../../../assets/logo.png';
+import Logo from '../../../recursos/logo.png';
 
 //Importamos el método de navegación
 import { useNavigation } from '@react-navigation/native';
@@ -65,9 +65,15 @@ export default UpTab = ({ usuarioActual }) => {
                     resizeMode= {"contain"}
                 />
                 <Text style={styles.title}> Gestionador Proyectos </Text>
-                <TouchableOpacity onPress={pressButtonUsuario} style={styles.botonUsuario}>
-                    <Text style={styles.botonUsuarioText}>{obtenerPrimeraLetra()}</Text>
-                </TouchableOpacity>
+                
+                {
+                    /*
+                    <TouchableOpacity onPress={pressButtonUsuario} style={styles.botonUsuario}>
+                        <Text style={styles.botonUsuarioText}>{obtenerPrimeraLetra()}</Text>
+                    </TouchableOpacity>
+                    */
+                }
+                
             
 
                 {/*Acá controlamos el menú que surge al tocar el botón*/}
