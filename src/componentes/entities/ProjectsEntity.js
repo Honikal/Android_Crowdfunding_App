@@ -1,5 +1,7 @@
-import { getDatabase, ref, get, push, set, update } from 'firebase/database';
-import app from "../../../firebaseConfig.js";
+import { getDatabase, ref as dbRef, get, push, set, update } from 'firebase/database';
+import { getStorage, ref as storageRef, uploadBytes } from 'firebase/storage';
+import { app } from "../../../firebaseConfig.js";
+
 
 import Proyecto from "../models/Projects.js"
 
@@ -9,7 +11,7 @@ export default class ProyectoEntidad {
 
     constructor(){
         this.#db = getDatabase(app);
-        this.#dbRef = ref(this.#db, "projects");
+        this.#dbRef = dbRef(this.#db, "projects");
     }
 
     //GET Proyecto
@@ -51,13 +53,37 @@ export default class ProyectoEntidad {
                 id_creador: proyecto.getIdCreador,
                 nombre: proyecto.getNombre,
                 descripcion: proyecto.getDescripcion,
+                categoria: proyecto.getCategoria,
                 objetivo_financiero: proyecto.getObjetivoFinanciero,
                 fondos_recaudados: proyecto.getFondosRecaudados,
+                fecha_creacion: proyecto.getFechaCreacion,
                 fecha_limite: proyecto.getFechaLimite,
                 media: proyecto.getMedia
             });
         } catch (error) {
             console.error("Error desde la capa entidad intentando crear el proyecto: ", proyecto);
+            throw error;
+        }
+    }
+
+    async uploadMediaToStorage(idProyecto, media) {
+        try {
+            const storage = getStorage();
+            const mediaUrls = [];
+
+            for (const uri of media) {
+                //Creamos referencias únicas por cada archivo basado en proyecto ID y un nombre único
+                const response = await fetch(uri);
+                const blob = await response.blob();
+
+                const fileName = `${idProyecto}_${new Date().getTime()}`; //Nombre del archivo a guardar
+                const storageRef = storageRef(storage, `projects/${idProyecto}/${fileName}`);
+
+                //Cargamos la imagen en el Storage de Firebase
+                await uploadBytes(storageRef, blob);
+            }        
+        } catch (error) {
+            console.error("Error desde la capa entidad guardando las imágenes en storage: ", error);
             throw error;
         }
     }
@@ -72,7 +98,7 @@ export default class ProyectoEntidad {
      */
     async editProyecto(idProyecto, datosActualizar){
         try {
-            const proyectoRef = ref(this.#db, `projects/${idProyecto}`);
+            const proyectoRef = dbRef(this.#db, `projects/${idProyecto}`);
             await update(proyectoRef, datosActualizar);
             console.log("Confirmación capa entidad de actualización del proyecto");
         } catch (error) {

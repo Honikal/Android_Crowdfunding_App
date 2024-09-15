@@ -16,4 +16,9 @@ npm install react-native-masked-text
 #Instalar librería de expo para acceder a constantes nivel app, como .envs
 npx expo install expo-constants
 
+#Librerías de cear proyecto
+npm install @react-native-picker/picker
+npx expo install expo-image-picker
+npx expo install @react-native-community/datetimepicker
+
 
