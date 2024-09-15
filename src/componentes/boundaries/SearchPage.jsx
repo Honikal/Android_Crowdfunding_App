@@ -1,50 +1,112 @@
-import React, { useState, useEffect } from "react";
-import{
+import React, { useState } from 'react';
+import {
     View,
     Text,
+    TextInput,
+    FlatList,
+    TouchableOpacity,
+    StyleSheet
+} from 'react-native';
+import { FontAwesome } from '@expo/vector-icons'; // Importar FontAwesome para usar el icono de la lupa
 
-    StyleSheet,
-    
-    Dimensions,
-    PixelRatio,
-} from 'react-native'
+// Datos de prueba para los proyectos (puedes reemplazarlo con una llamada real a la API)
+const proyectosData = [
+    { id: '1', nombre: 'Proyecto de Tecnología' },
+    { id: '2', nombre: 'Proyecto de Cultura' },
+    { id: '3', nombre: 'Proyecto de Educación' },
+    // Agrega más proyectos de prueba aquí...
+];
 
-//Importamos el tab superior de la pantalla
+const SearchPage = () => {
+    const [query, setQuery] = useState(''); // Estado para la consulta de búsqueda
+    const [filteredProyectos, setFilteredProyectos] = useState(proyectosData); // Estado para los proyectos filtrados
 
-//Importamos el sistema de navegación
-import { useNavigation, useIsFocused } from '@react-navigation/native'
+    // Función para manejar la búsqueda en tiempo real
+    const handleSearch = (text) => {
+        setQuery(text);
+        const filtered = proyectosData.filter(proyecto =>
+            proyecto.nombre.toLowerCase().includes(text.toLowerCase())
+        );
+        setFilteredProyectos(filtered);
+    };
 
-const SearchPage = ( { route } ) => {
-    //Recibimos el parámetro como tal
-    const { usuarioActual } = route.params;
-
-    //Instanciamos la constante de navegación
-    const navigation = useNavigation();
-
-
-    //Checar que se estén cargando los datos en el sistema en la página
-    return(
+    return (
         <View style={styles.container}>
-            <Text>Pagina Busqueda</Text>
+            <Text style={styles.title}>Buscar Proyecto</Text>
+            
+            {/* Barra de búsqueda con icono de lupa */}
+            <View style={styles.inputContainer}>
+                <FontAwesome name="search" style={styles.icon} />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Ingrese el nombre del proyecto"
+                    value={query}
+                    onChangeText={handleSearch}
+                />
+            </View>
+
+            <FlatList
+                data={filteredProyectos}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                    <TouchableOpacity style={styles.projectItem}>
+                        <Text style={styles.projectName}>{item.nombre}</Text>
+                    </TouchableOpacity>
+                )}
+                ListEmptyComponent={<Text style={styles.noResults}>No se encontraron proyectos</Text>}
+            />
         </View>
-    )
-}
-
-//Responsive code?
-const {width, height} = Dimensions.get('window');
-const scale = width / 375;
-
-const normalize = (size) => {
-    return Math.round(PixelRatio.roundToNearestPixel(size * scale))
-}
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
-      width: '100%',
-      flexGrow: 1,
-      backgroundColor: '#A8CEFF',
-      alignItems: 'center',
-      justifyContent: 'center',
+        flex: 1,
+        backgroundColor: '#A8CEFF',
+        padding: 20,
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 26,
+        color: '#FFF',
+        marginBottom: 20,
+        marginTop: 100, // Ajuste para mover el título más abajo
+    },
+    inputContainer: {
+        flexDirection: 'row', // Para alinear el icono y el TextInput horizontalmente
+        alignItems: 'center',
+        width: '100%',
+        padding: 10,
+        backgroundColor: '#FFF',
+        borderRadius: 20,
+        marginBottom: 20,
+    },
+    input: {
+        flex: 1, // Ocupa el espacio restante del input
+        fontSize: 16,
+        paddingHorizontal: 10,
+    },
+    icon: {
+        fontSize: 20,
+        color: '#c4c4bc', // Color del icono de la lupa
+        marginLeft: 10, // Un pequeño margen izquierdo para separar la lupa del borde
+    },
+    projectItem: {
+        width: '100%',
+        padding: 15,
+        backgroundColor: '#FFF',
+        borderRadius: 10,
+        marginBottom: 10,
+        alignItems: 'center',
+    },
+    projectName: {
+        fontSize: 18,
+        color: '#000',
+    },
+    noResults: {
+        color: '#FFF',
+        fontSize: 16,
+        marginTop: 20,
     },
 });
 
