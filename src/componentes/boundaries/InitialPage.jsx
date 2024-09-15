@@ -4,6 +4,7 @@ import{
     Text,
 
     StyleSheet,
+    Image,
     
     Dimensions,
     PixelRatio,
@@ -15,12 +16,13 @@ import{
 import UpTab from "./styleComponents/UpTab";
 import DownTab from "./styleComponents/DownTab";
 
-import Header from "./styleComponents/Header";
-
+//Importamos el controlador
+import InitialPage_Ctrl from "../controllers/InitialPageController";
 
 
 //Importamos el sistema de navegación
 import { useNavigation, useIsFocused } from '@react-navigation/native'
+import { ScrollView } from "react-native-gesture-handler";
 
 const InitialPage = ( { route } ) => {
     //Recibimos el parámetro como tal
@@ -28,6 +30,29 @@ const InitialPage = ( { route } ) => {
 
     //Agregamos el state del dropdown y su visibilidad desde acá
     const [dropdownVisible, setDropdownVisible] = useState(false);
+
+    //Agregamos el state de la lista de proyectos
+    const [listaProyectos, setListaProyectos] = useState([]);
+
+    //Checamos que se estén cargando los datos
+    const isFocused = useIsFocused();
+
+    useEffect(() => {
+        const enlistarProyectos = async () => {
+            const controlador = new InitialPage_Ctrl(usuarioActual);
+            try {
+                //Tomamos los proyectos del sistema
+                const proyectos = await controlador.getTodosLosProyectos();
+                setListaProyectos(proyectos);
+            } catch (error) {
+                console.error("Error en la capa de vista: ", error);
+            }
+        }
+
+        if (isFocused){
+            enlistarProyectos();
+        }
+    }, [isFocused, usuarioActual])
 
     //Instanciamos la constante de navegación
     const navigation = useNavigation();
@@ -40,6 +65,10 @@ const InitialPage = ( { route } ) => {
         }
     }
 
+
+    console.log("Proyectos o lista de proyectos: ", listaProyectos);
+    console.log("Size: ", listaProyectos.length);
+
     //Checar que se estén cargando los datos en el sistema en la página
     return(
         <TouchableWithoutFeedback onPress={handleOutsidePress}>
@@ -51,7 +80,44 @@ const InitialPage = ( { route } ) => {
                 />
                 {/*<Header></Header>*/}
                 <View style={styles.container}>
-                    <Text>Pagina Inicial</Text>
+                    {listaProyectos.map((proyecto, index) => (
+                        <View key={index} style={styles.proyectoContainer}>
+                            <View style={styles.seccionProfile}>
+                                <View style={styles.profileIcon}>
+                                    <Text>I</Text>
+                                </View>
+                                <View style={styles.columnProyect}>
+                                    <Text style={styles.titleProyect}>{proyecto.nombre}</Text>
+                                    <Text>{proyecto.creadorNombre} </Text>
+                                    {proyecto.estado_proyecto ? (
+                                        <Text>{proyecto.diasRestantes}   {proyecto.porcentajeFondos}</Text>
+                                    ) : (
+                                        <Text>Aún por iniciar   {proyecto.porcentajeFondos}% recaudado</Text>
+                                    )}
+
+                                </View>
+                            </View>
+                            <Text style={styles.descriptionProyect}>{proyecto.descripcion} </Text>
+
+                            <ScrollView horizontal={true}>
+                                {proyecto.media > 0 && proyecto.media.map((mediaItem, index) => {
+                                    return mediaItem.type === "image" ? (
+                                        <Image
+                                            key={index}
+                                            source={{ uri: mediaItem.uri }}
+                                            style={styles.preview}
+                                        />
+                                    ) : mediaItem.type === "video" ? (
+                                        <Image
+                                        />
+                                    ) : null;
+                                })}
+
+                            </ScrollView>
+
+                            <Text style={styles.categoriaButton}>{proyecto.categoria}</Text>
+                        </View>
+                    ))}
                 </View>
 
                 <DownTab
@@ -76,12 +142,79 @@ const normalize = (size) => {
 const styles = StyleSheet.create({
     container: {
       width: '100%',
+      height: '70%',
       flexGrow: 1,
       backgroundColor: '#A8CEFF',
       alignItems: 'center',
       justifyContent: 'center',
     },
 
+    proyectoContainer: {
+        width: '100%',
+        padding: 10,
+
+        borderColor: '#A8CEFF',
+        borderWidth: 2,
+        backgroundColor: '#ECF7FD'
+    },
+    seccionProfile: {
+        flexDirection: 'row'
+    },
+    profileIcon: {
+        marginHorizontal: 2,
+        width: normalize(48),
+        height: normalize(48),
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: normalize(10),
+        
+        backgroundColor: '#75A1DE',
+
+        borderRadius: normalize(24),
+        borderWidth: 1,
+        borderTopColor: '#A8CEFF',
+        borderRightColor: '#A8CEFF',
+        borderBottomColor: '#75A1DE',
+        borderLeftColor: '#75A1DE',
+    },
+    columnProyect: {
+        marginLeft: 10,
+    },
+
+    titleProyect: {
+        color: '0B3979',
+        fontWeight: 'bold',
+        fontSize: normalize(16),
+    },
+    descriptionProyect: {
+        marginTop: 8,
+    },
+
+
+    preview: {
+        width: width * 0.8,
+        height: width * 0.5,
+        borderRadius: 10,
+        marginTop: 15,
+    },
+    categoriaButton: {
+        marginTop: normalize(6),
+
+        paddingVertical: 6,
+        paddingHorizontal: 14,
+
+        backgroundColor: '#ECF7FD',
+
+        color: '#0B3979',
+        textAlign: 'center',
+
+        borderColor: '#75A1DE',
+        borderWidth: 3,
+        borderRadius: 40,
+
+        alignSelf: 'flex-start',
+        maxWidth: '50%'
+    },
 });
 
 export default InitialPage;

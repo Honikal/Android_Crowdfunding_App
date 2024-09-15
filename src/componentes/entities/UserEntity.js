@@ -41,6 +41,34 @@ export default class UsuarioEntidad {
         }
     }
 
+    /**
+     * Función encargada de retornar la información de un usuario específico como tal
+     * @async
+     * @param {String} idUsuario     - Id del presunto usuario a buscar 
+     * @returns {Promise<Usuario>}   - Retorna true si encuentra un usuario con ese correo, sino, no retorna false
+     */
+    async getUsuarioByID(idUsuario) {
+        //Buscamos directamente en el punto de referencia
+        try {
+            const usuarioRef = ref(this.#db, `users/${idUsuario}`);
+
+            //Buscamos la posibilidad de dicha ruta
+            const snapshot = await get(usuarioRef);
+
+            if (snapshot.exists()){
+                usuario = snapshot.val();
+                console.log("Usuario encontrado y extraído al sistema");
+                return usuario
+            } else {
+                console.error("Error al encontrar al usuario");
+                throw new Error(`No existe el usuario en el sistema, problemas internos desconocidos`);
+            }
+        } catch (error) {
+            console.error("Error desde la capa entidad: ", error);
+            throw error;
+        }
+    }
+
     //ADD Usuario
     /**
      * Función encargada de agregar un usuario a la base de datos
@@ -88,6 +116,22 @@ export default class UsuarioEntidad {
             console.error("Error desde la capa entidad intentando modificar al usuario: ", error);
             throw error;
         }
+    }
+
+    /**
+     * Función encargada de aplicar formato de base de datos a usuario clase
+     * @async
+     * @param {Object} usuarioData           - Objeto de usuario extraído del sistema
+     * @returns {Usuario}                    - Retorna la clase usuario como tal
+     */
+    createUsuarioFromData ( usuarioData ){
+        //Extraemos la data de la base de datos como tal
+        const { idUsuario, admin, nombre_completo, cedula, area_trabajo, cantidad_bolsillo, telefono, correo, password} =
+        usuarioData;
+
+        const usuario = new Usuario(idUsuario, nombre_completo, cedula, area_trabajo,
+            cantidad_bolsillo, telefono, correo, password, admin);
+        return usuario;
     }
 
 }
