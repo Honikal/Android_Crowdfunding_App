@@ -7,6 +7,8 @@ import{
     
     Dimensions,
     PixelRatio,
+
+    TouchableWithoutFeedback
 } from 'react-native'
 
 //Importamos el tab superior de la pantalla
@@ -24,27 +26,41 @@ const InitialPage = ( { route } ) => {
     //Recibimos el parámetro como tal
     const { usuarioActual } = route.params;
 
+    //Agregamos el state del dropdown y su visibilidad desde acá
+    const [dropdownVisible, setDropdownVisible] = useState(false);
 
     //Instanciamos la constante de navegación
     const navigation = useNavigation();
 
+    //Función encargada de manejar cuando un usuario da click fuera del dropdown
+    const handleOutsidePress = () => {
+        if (dropdownVisible){
+            console.log("Se desactiva la lista");
+            setDropdownVisible(false); //Se cierra cuando se da click afuera
+        }
+    }
 
     //Checar que se estén cargando los datos en el sistema en la página
     return(
-        <View>
-            <UpTab
-                usuarioActual={usuarioActual}
-            />
-            {/*<Header></Header>*/}
-            <View style={styles.container}>
-                <Text>Pagina Inicial</Text>
-            </View>
+        <TouchableWithoutFeedback onPress={handleOutsidePress}>
+            <View> 
+                <UpTab
+                    usuarioActual={usuarioActual}
+                    dropdownVisible={dropdownVisible}        //Pasamos la variable al UpTab
+                    setDropdownVisible={setDropdownVisible}  //Pasamos el setter al UpTab
+                />
+                {/*<Header></Header>*/}
+                <View style={styles.container}>
+                    <Text>Pagina Inicial</Text>
+                </View>
 
-            <DownTab
-                usuarioActual={usuarioActual}
-                paginaActual={"Pagina Inicial"}
-            />
-        </View>
+                <DownTab
+                    usuarioActual={usuarioActual}
+                    paginaActual={"Pagina Inicial"}
+                />
+            </View>
+        </TouchableWithoutFeedback>
+        
 
     )
 }

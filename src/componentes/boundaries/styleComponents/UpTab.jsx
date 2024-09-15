@@ -11,9 +11,12 @@ import{
     PixelRatio,
 
     //Si el usuario da click por fuera, se cierra
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
 } from 'react-native'
 import Constants from "expo-constants";
+
+//Importamos controlador que hace función de logout
+import Login_Ctrl from "../../controllers/LoginController.js";
 
 //Importamos objetos gráficos
 import Logo from '../../../../assets/logo.png';
@@ -21,16 +24,17 @@ import Logo from '../../../../assets/logo.png';
 //Importamos el método de navegación
 import { useNavigation } from '@react-navigation/native';
 
-export default UpTab = ({ usuarioActual }) => {
-    //State para manejar que el modal esté encendido
-    const [dropdownVisible, setDropdownVisible] = useState(false);
+export default UpTab = ({ usuarioActual, dropdownVisible, setDropdownVisible }) => {
+    //Como parámetros estamos recibiendo el usuario, el dropdown y el setter
 
     console.log("Usuario actual pasado en el up tab");
     usuarioActual.showData();
 
+    console.log("Mostramos la variable del dropdown menu: ", dropdownVisible);
+    console.log("Mostramos la función encargada de setear el tab: ", setDropdownVisible);
+
     //Insertamos la constante de navegación
     const navigation = useNavigation();
-
 
     const pressButtonUsuario = () => {
         setDropdownVisible(!dropdownVisible);
@@ -43,7 +47,7 @@ export default UpTab = ({ usuarioActual }) => {
     //Opciones del menú de usuario
     const handleLogOut = async() => {
         //Maneja la opción de salir de sesión
-        const controlador = new IniciarSesion_Ctrl()
+        const controlador = new Login_Ctrl()
         try {
             await controlador.logOut();
             setDropdownVisible(false);
@@ -60,38 +64,43 @@ export default UpTab = ({ usuarioActual }) => {
         navigation.navigate('Modificar Usuario', { usuarioActual: usuarioActual });
     }
 
+
     return (
-        <TouchableWithoutFeedback onPress={() => setDropdownVisible(false)}>
-            <View style={[styles.upTab]}>
-                <View style={styles.logoContainer}>
-                    <Image
-                        source={Logo}
-                        style= {styles.logo}
-                        resizeMode= {"contain"}
-                    />
-                    <Text style={styles.logoText}>Crowdfounder</Text>
-                </View> 
-                <TouchableOpacity onPress={pressButtonUsuario} style={styles.profileButton}>
-                    <Text style={styles.botonUsuarioText}>{obtenerPrimeraLetra()}</Text>
-                </TouchableOpacity>
+        <View style={[styles.upTab]}>
+            <View style={styles.logoContainer}>
+                <Image
+                    source={Logo}
+                    style= {styles.logo}
+                    resizeMode= {"contain"}
+                />
+                <Text style={styles.logoText}>Crowdfounder</Text>
+            </View> 
+            <TouchableOpacity onPress={pressButtonUsuario} style={styles.profileButton}>
+                <Text style={styles.botonUsuarioText}>{obtenerPrimeraLetra()}</Text>
+            </TouchableOpacity>
 
-                
-                
-            
-
-                {/*Acá controlamos el menú que surge al tocar el botón*/}
-                {dropdownVisible && (
-                    <View style={styles.dropdownMenu}>
-                        <TouchableOpacity onPress={handleLogOut} style={styles.dropdownItem}>
-                            <Text style={styles.dropdownItemText}> Salir de sesión </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={handleModificarUsuario} style={styles.dropdownItem}>
-                            <Text style={styles.dropdownItemText}> Modificar Usuario </Text>
-                        </TouchableOpacity>
+            {/*Acá controlamos el menú que surge al tocar el botón*/}
+            {dropdownVisible && (
+                <View style={styles.dropdownMenu}>
+                    <View style={styles.welcomeContaniner}>
+                        <Text>{usuarioActual.getCorreo}</Text>
+                        <View style={[styles.profileButton, styles.accountImage]}>
+                            <Text style={[styles.accountImageText]}>{obtenerPrimeraLetra()}</Text>
+                        </View>
+                        <Text>¡Hola {usuarioActual.getNombre}!</Text>
                     </View>
-            )}
-            </View>
-        </TouchableWithoutFeedback>
+
+
+                    <TouchableOpacity onPress={handleModificarUsuario} style={styles.dropdownItem}>
+                        <Text style={styles.dropdownItemText}> Modificar cuenta </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handleLogOut} style={styles.dropdownItem}>
+                        <Text style={styles.dropdownItemText}> Salir de sesión </Text>
+                    </TouchableOpacity>
+                    
+                </View>
+        )}
+        </View>
     )
 }
 
@@ -115,7 +124,6 @@ const styles = StyleSheet.create({
         width: '100%',
 
         paddingHorizontal: 15,
-        paddingVertical: 10,
         zIndex: 10,   //Hacemos que siempre se coloca arriba
 
         //Colores como tal y bordes
@@ -187,8 +195,10 @@ const styles = StyleSheet.create({
     dropdownMenu: {
         position: 'absolute',
         top: normalize(75),
-        left: width / 2,
-        width: width / 2,
+        left: normalize(width / 3),
+        width: '75%',
+        alignItems: 'center',
+
         backgroundColor: 'white', //Transparente
         borderRadius: 10,
         padding: 10,
@@ -211,6 +221,19 @@ const styles = StyleSheet.create({
     dropdownItemText: {
         color: '#fff',
         fontSize: normalize(16)
-    }
+    },
+    welcomeContaniner: {
+        marginBottom: 20,
+        alignItems: 'center',
+    },
+    accountImage: {
+        marginVertical: 20
+    },
+    accountImageText: {
+        marginTop: 0,
+        fontSize: normalize(19),
+        fontWeight: 'bold',
+        color: '#ECF7FD',
+    },
 })
 

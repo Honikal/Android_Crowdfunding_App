@@ -5,6 +5,7 @@ import Login from './src/componentes/boundaries/Login';
 import SignUp from './src/componentes/boundaries/SignUp';
 import InitialPage from './src/componentes/boundaries/InitialPage';
 
+import ModifyAccount from './src/componentes/boundaries/ModifyAccount';
 import SearchPage from './src/componentes/boundaries/SearchPage';
 import NewProjectPage from './src/componentes/boundaries/NewProjectPage';
 
@@ -32,6 +33,12 @@ export default function App() {
         <Stack.Screen
           name='Pagina Inicial'
           component={InitialPage}
+          options={{headerShown: false}}
+          initialParams={{ usuarioActual: null }}
+        />
+        <Stack.Screen
+          name='Modificar Cuenta'
+          component={ModifyAccount}
           options={{headerShown: false}}
           initialParams={{ usuarioActual: null }}
         />
