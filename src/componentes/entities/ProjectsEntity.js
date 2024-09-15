@@ -30,6 +30,9 @@ export default class ProyectoEntidad {
                         idProyecto: id
                     }
                 })
+                return proyectos;
+            } else {
+                return [];
             }
         } catch (error) {
             console.error("Error desde la capa entidad extrayendo los proyectos del sistema: ", error);
