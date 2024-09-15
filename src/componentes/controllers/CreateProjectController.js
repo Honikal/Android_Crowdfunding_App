@@ -35,10 +35,15 @@ export default class CreateProject_Ctrl {
     async crearProyecto(){
         try {
             const proyectoEntidad = new ProyectoEntidad();
-            await proyectoEntidad.addProyecto(this.#proyecto);
+            const proyectoId = await proyectoEntidad.addProyecto(this.#proyecto);
+            this.#proyecto.setIdProyecto = proyectoId;
 
-            //Para ver si tiene id de proyecto
-            this.#proyecto.showData();
+            //Guardamos en la base de datos de storage
+            await proyectoEntidad.uploadMediaToStorage(proyectoId, this.#proyecto.getMedia);
+
+            console.log("Proyecto creado desde controlador: ");
+            console.log(this.#proyecto.showData());
+            return this.#proyecto;
         } catch (error) {
             console.error("Error desde la capa controlador: ", error);
             throw error;

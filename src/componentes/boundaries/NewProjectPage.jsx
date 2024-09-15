@@ -7,7 +7,9 @@ import {
     TouchableOpacity,
     StyleSheet,
     Alert,
+
     Image,
+
     Dimensions
 } from 'react-native';
 
@@ -25,6 +27,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 // Importamos datos gráficos
 import { FontAwesome } from '@expo/vector-icons';
+import { ScrollView } from "react-native-gesture-handler";
 
 // Tomando las dimensiones de la pantalla
 const { width } = Dimensions.get('window');
@@ -32,14 +35,13 @@ const { width } = Dimensions.get('window');
 const CreateProject = ( {route} ) => {
     //Recibimos el parámetro como tal
     const { usuarioActual } = route.params;
-    usuarioActual.showData();
 
     // Variables de estado para el formulario
     const [projectName, setProjectName] = useState("");
     const [description, setDescription] = useState("");
     const [fundingGoal, setFundingGoal] = useState("");
     const [category, setCategory] = useState("Seleccionar Categoría");
-    const [media, setMedia] = useState(null); // Para guardar la imagen o video seleccionado
+    const [media, setMedia] = useState([]); // Para guardar la imagen o video seleccionado
 
     // Variables para la selección de fechas
     const [startDate, setStartDate] = useState(new Date());
@@ -63,14 +65,21 @@ const CreateProject = ( {route} ) => {
         });
 
         if (!result.canceled) {
-            //setMedia((prevMedia) => [...prevMedia, result.uri]); // Guardamos la URI del archivo seleccionado
-            setMedia(result.uri)
+            //Checamos si el archivo seleccionado es image o video
+            const isImage = result.assets[0].type === "image";
+            const isVideo = result.assets[0].type === "video";
 
+            const newMedia = {
+                uri: result.assets[0].uri, //Uri del archivo seleccionado
+                type: isImage ? "image" : isVideo ? "video" : "unknown",
+            };
+
+            setMedia((prevMedia) => [...prevMedia, newMedia]); // Guardamos la URI del archivo seleccionado
             //null
             //Value for uri cannot be cast from ReadableNativeArray to String
 
-            console.log("Si se guarda la imagen como tal: ", result.uri);
-            console.log("Paths de imágenes guardados: ", media);
+            console.log("Si se guarda la imagen como tal: ", newMedia);
+            console.log("Datos actualizados en sistema: ", media)
         }
     };
 
@@ -88,7 +97,7 @@ const CreateProject = ( {route} ) => {
     }
 
     // Función para manejar el envío del formulario
-    const handleSubmit = () => {
+    const handleSubmit = async() => {
         if (!projectName.trim() || !description.trim() || !fundingGoal.trim()
             || category === "Seleccionar Categoría") {
             Alert.alert('Campos obligatorios', 'Por favor complete todos los campos.');
@@ -97,15 +106,22 @@ const CreateProject = ( {route} ) => {
 
         try {
             // Aquí puedes agregar la lógica para guardar el proyecto en la base de datos
+
+            //Extraemos la lista the uris de cada objeto de media
+            const mediaUris = media.map(mediaItem => mediaItem.uri);
+            
             const registrar = new CreateProject_Ctrl(usuarioActual.getIdUsuario, projectName, description,
-                category, fundingGoal, formatDate(startDate), formatDate(endDate), media);
+                category, fundingGoal, formatDate(startDate), formatDate(endDate), mediaUris);
 
-            registrar.crearProyecto();
-
+            const proyectoActual = await registrar.crearProyecto();
+            
+            //Para ver si tiene id de proyecto
+            proyectoActual.showData();
 
             Alert.alert("Proyecto Creado", "El proyecto ha sido creado exitosamente.");
         } catch (error) {
-
+            console.error("Error durante creación del proyecto:", error.message);
+            Alert.alert(error.message);
         }
         
     };
@@ -223,10 +239,21 @@ const CreateProject = ( {route} ) => {
                         {media ? 'Cambiar Imagen o Video' : 'Subir Imagen o Video'}
                     </Text>
                 </TouchableOpacity>
-
-                {media && (
-                    <Image source={{ uri: media }} style={styles.preview} />
-                )}
+                
+                <ScrollView horizontal={true} style={styles.mediaPreviewContainer}>
+                    {media.length > 0 && media.map((mediaItem, index) => {
+                        return mediaItem.type === "image" ? (
+                            <Image
+                                key={index}
+                                source={{ uri: mediaItem.uri }}
+                                style={styles.preview}
+                            />
+                        ) : mediaItem.type === "video" ? (
+                            <Image
+                            />
+                        ) : null;
+                    })}
+                </ScrollView>
 
                 <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                     <Text style={styles.buttonText}>Crear Proyecto</Text>
@@ -289,6 +316,10 @@ const styles = StyleSheet.create({
     mediaButtonText: {
         color: '#FFF',
         fontSize: 16,
+    },
+    mediaPreviewContainer: {
+        marginVertical: 10,
+        maxHeight: width * 0.5,
     },
     preview: {
         width: width * 0.8,

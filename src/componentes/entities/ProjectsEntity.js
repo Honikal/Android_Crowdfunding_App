@@ -60,6 +60,8 @@ export default class ProyectoEntidad {
                 fecha_limite: proyecto.getFechaLimite,
                 media: proyecto.getMedia
             });
+
+            return newProyectoRef;
         } catch (error) {
             console.error("Error desde la capa entidad intentando crear el proyecto: ", proyecto);
             throw error;
@@ -69,7 +71,6 @@ export default class ProyectoEntidad {
     async uploadMediaToStorage(idProyecto, media) {
         try {
             const storage = getStorage();
-            const mediaUrls = [];
 
             for (const uri of media) {
                 //Creamos referencias únicas por cada archivo basado en proyecto ID y un nombre único
@@ -77,10 +78,10 @@ export default class ProyectoEntidad {
                 const blob = await response.blob();
 
                 const fileName = `${idProyecto}_${new Date().getTime()}`; //Nombre del archivo a guardar
-                const storageRef = storageRef(storage, `projects/${idProyecto}/${fileName}`);
+                const storageR = storageRef(storage, `projects/${idProyecto}/${fileName}`);
 
                 //Cargamos la imagen en el Storage de Firebase
-                await uploadBytes(storageRef, blob);
+                await uploadBytes(storageR, blob);
             }        
         } catch (error) {
             console.error("Error desde la capa entidad guardando las imágenes en storage: ", error);
