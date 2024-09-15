@@ -59,11 +59,16 @@ export default UpTab = ({ usuarioActual, dropdownVisible, setDropdownVisible }) 
     }
 
     const handleModificarUsuario = () => {
-        //Maneja la opción de salir de sesión
+        
         setDropdownVisible(false);
         navigation.navigate('Modificar Usuario', { usuarioActual: usuarioActual });
     }
-
+    
+    const handleMyProjects = async() => {
+        //Maneja la opción de ver los proyectos del usuario
+        setDropdownVisible(false);
+        navigation.navigate('Mis Proyectos', { usuarioActual: usuarioActual });
+    }
 
     return (
         <View style={[styles.upTab]}>
@@ -93,6 +98,9 @@ export default UpTab = ({ usuarioActual, dropdownVisible, setDropdownVisible }) 
 
                     <TouchableOpacity onPress={handleModificarUsuario} style={styles.dropdownItem}>
                         <Text style={styles.dropdownItemText}> Modificar cuenta </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handleMyProjects} style={styles.dropdownItem}>
+                        <Text style={styles.dropdownItemText}> Mis proyectos </Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={handleLogOut} style={styles.dropdownItem}>
                         <Text style={styles.dropdownItemText}> Salir de sesión </Text>
