@@ -1,5 +1,5 @@
 import { getDatabase, ref, get, push, set, update } from 'firebase/database'
-import app from "../../../firebaseConfig.js"
+import { app } from "../../../firebaseConfig.js" 
 
 import Usuario from '../models/Users.js'
 

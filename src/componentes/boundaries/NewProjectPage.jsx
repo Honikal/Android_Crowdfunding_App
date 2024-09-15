@@ -10,6 +10,10 @@ import {
     Image,
     Dimensions
 } from 'react-native';
+
+//Controlador
+import CreateProject_Ctrl from "../controllers/CreateProjectController";
+
 //Componente de scroll vertical
 import VerticalScroll from "./styleComponents/VerticalScroll";
 
@@ -25,7 +29,11 @@ import { FontAwesome } from '@expo/vector-icons';
 // Tomando las dimensiones de la pantalla
 const { width } = Dimensions.get('window');
 
-const CreateProject = () => {
+const CreateProject = ( {route} ) => {
+    //Recibimos el parámetro como tal
+    const { usuarioActual } = route.params;
+    usuarioActual.showData();
+
     // Variables de estado para el formulario
     const [projectName, setProjectName] = useState("");
     const [description, setDescription] = useState("");
@@ -55,19 +63,51 @@ const CreateProject = () => {
         });
 
         if (!result.canceled) {
-            setMedia(result.uri); // Guardamos la URI del archivo seleccionado
+            //setMedia((prevMedia) => [...prevMedia, result.uri]); // Guardamos la URI del archivo seleccionado
+            setMedia(result.uri)
+
+            //null
+            //Value for uri cannot be cast from ReadableNativeArray to String
+
+            console.log("Si se guarda la imagen como tal: ", result.uri);
+            console.log("Paths de imágenes guardados: ", media);
         }
     };
 
+    // Función para convertir el date a tipo formato indicado
+    const formatDate = (rawDate) => {
+        /*Mediante ésta función, actualizamos los datos o información de las fechas agregando un formato
+        específico, en éste caso, usaremos formato   dd/mm/aaaa */
+        let date = new Date(rawDate);
+
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        let day = date.getDate();
+
+        return `${day}/${month}/${year}`;
+    }
+
     // Función para manejar el envío del formulario
     const handleSubmit = () => {
-        if (!projectName.trim() || !description.trim() || !fundingGoal.trim() || category === "Seleccionar Categoría") {
+        if (!projectName.trim() || !description.trim() || !fundingGoal.trim()
+            || category === "Seleccionar Categoría") {
             Alert.alert('Campos obligatorios', 'Por favor complete todos los campos.');
             return;
         }
 
-        // Aquí puedes agregar la lógica para guardar el proyecto en la base de datos
-        Alert.alert("Proyecto Creado", "El proyecto ha sido creado exitosamente.");
+        try {
+            // Aquí puedes agregar la lógica para guardar el proyecto en la base de datos
+            const registrar = new CreateProject_Ctrl(usuarioActual.getIdUsuario, projectName, description,
+                category, fundingGoal, formatDate(startDate), formatDate(endDate), media);
+
+            registrar.crearProyecto();
+
+
+            Alert.alert("Proyecto Creado", "El proyecto ha sido creado exitosamente.");
+        } catch (error) {
+
+        }
+        
     };
 
     // Funciones para manejar el DatePicker

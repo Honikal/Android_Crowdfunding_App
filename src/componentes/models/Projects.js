@@ -3,8 +3,10 @@ export default class Proyecto{
     #idCreador
     #nombre
     #descripcion
+    #categoria
     #objetivoFinanciero
     #fondosRecaudados
+    #fechaCreacion
     #fechaLimite
     #media
 
@@ -14,9 +16,10 @@ export default class Proyecto{
      * @param {string} idCreador             - ID única generada en RDB Firebase, referenciando al usuario creador
      * @param {string} nombre                - Nombre completo del proyecto
      * @param {string} descripcion           - Descripción del proyecto a realizarse
+     * @param {string} categoria             - Categoría o método de categorización de un proyecto
      * @param {float} objetivoFinanciero     - Objetivo financiero o dinero esperado a recolectarse
      * @param {string} fechaLimite           - Fecha en la que se espera llegar a recaudar el objetivo financiero antes de cerrar el proyecto
-     * @param {Array[string]} media          - Grupos de id's o distintos valores de identificación para tomar fotos o videos del proyecto
+     * @param {[string]} media          - Grupos de id's o distintos valores de identificación para tomar fotos o videos del proyecto
     */
 
      constructor (
@@ -24,8 +27,10 @@ export default class Proyecto{
         idCreador = '',
         nombre = '',
         descripcion = '',
+        categoria = '',
         objetivoFinanciero = 0.0,
         fondosRecaudados = 0.0,
+        fechaCreacion = '',
         fechaLimite = '',
         media = []
     ){
@@ -33,8 +38,10 @@ export default class Proyecto{
         this.#idCreador = idCreador,
         this.#nombre = nombre,
         this.#descripcion = descripcion,
+        this.#categoria = categoria,
         this.#objetivoFinanciero = objetivoFinanciero,
         this.#fondosRecaudados = fondosRecaudados,
+        this.#fechaCreacion = fechaCreacion,
         this.#fechaLimite = fechaLimite,
         this.#media = media
     }
@@ -52,11 +59,17 @@ export default class Proyecto{
     get getDescripcion() {
         return this.#descripcion;
     }
+    get getCategoria(){
+        return this.#categoria;
+    }
     get getObjetivoFinanciero() {
         return this.#objetivoFinanciero;
     }
     get getFondosRecaudados() {
         return this.#fondosRecaudados;
+    }
+    get getFechaCreacion() {
+        return this.#fechaCreacion;
     }
     get getFechaLimite() {
         return this.#fechaLimite;
@@ -87,6 +100,13 @@ export default class Proyecto{
         */
         this.#descripcion = value
     }
+    set setCategoria(value){
+        /**
+         * setter categoria
+         * @param {string} value     - Valor de entrada a reemplazar la categoría del proyecto
+        */
+        this.#categoria = value
+    }
     set setObjetivoFinanciero(value){
         /**
          * setter objetivo financiero
@@ -101,6 +121,13 @@ export default class Proyecto{
         */
         this.#fondosRecaudados = value
     }
+    set setFechaCreacion(value){
+        /**
+         * setter fecha creación
+         * @param {string} value     - Valor de entrada a reemplazar la fecha de inicio del proyecto
+        */
+        this.#fechaCreacion = value
+    }
     set setFechaLimite(value){
         /**
          * setter fecha límite
@@ -111,7 +138,7 @@ export default class Proyecto{
     set setMedia(value){
         /**
          * setter media codes
-         * @param {Array[string]} value   - Valor de entrada a reemplazar un array de códigos que simbolizan los objetos de galería guardados
+         * @param {[string]} value   - Valor de entrada a reemplazar un array de códigos que simbolizan los objetos de galería guardados
         */
         this.#media = value
     }
