@@ -70,6 +70,12 @@ export default UpTab = ({ usuarioActual, dropdownVisible, setDropdownVisible }) 
         navigation.navigate('Mis Proyectos', { usuarioActual: usuarioActual });
     }
 
+    const handleConfigurations = async() => {
+        //Maneja la opción de ver los proyectos del usuario
+        setDropdownVisible(false);
+        navigation.navigate('Configuraciones', { usuarioActual: usuarioActual });
+    }
+
     return (
         <View style={[styles.upTab]}>
             <View style={styles.logoContainer}>
@@ -101,6 +107,9 @@ export default UpTab = ({ usuarioActual, dropdownVisible, setDropdownVisible }) 
                     </TouchableOpacity>
                     <TouchableOpacity onPress={handleMyProjects} style={styles.dropdownItem}>
                         <Text style={styles.dropdownItemText}> Mis proyectos </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handleConfigurations} style={styles.dropdownItem}>
+                        <Text style={styles.dropdownItemText}> Configuraciones </Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={handleLogOut} style={styles.dropdownItem}>
                         <Text style={styles.dropdownItemText}> Salir de sesión </Text>
