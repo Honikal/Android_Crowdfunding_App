@@ -77,6 +77,7 @@ export default class InitialPage_Ctrl{
             //Retornamos un proyecto nuevo
             const proyectoEnriquecido = {
                 idProyecto,
+                id_creador,
                 nombre,
                 descripcion,
                 categoria,
@@ -92,7 +93,6 @@ export default class InitialPage_Ctrl{
             console.error("Error desde la capa de control creando un objeto práctico: ");
             throw error;
         }
-        
     }
 
     async getTodosLosProyectos(){
@@ -116,14 +116,7 @@ export default class InitialPage_Ctrl{
         }
     }
 
-    async getProyectosXUsuario(){
-        try {
-
-        } catch (error){
-            console.error("Error capa controlador extrayendo proyectos: ", error);
-            throw error;
-        }
-    }
+    
 }
 
 

@@ -22,7 +22,7 @@ export default class Proyecto{
      * @param {[string]} media          - Grupos de id's o distintos valores de identificación para tomar fotos o videos del proyecto
     */
 
-     constructor (
+    constructor (
         idProyecto = '',
         idCreador = '',
         nombre = '',
