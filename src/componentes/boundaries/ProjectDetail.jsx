@@ -9,15 +9,16 @@ import {
     Dimensions
 } from 'react-native';
 
+import { useNavigation } from '@react-navigation/native';
+
 const { width } = Dimensions.get('window');
 
 const ProjectDetail = ({ route }) => {
     const { proyectoActual } = route.params;
+    const navigation = useNavigation();
 
     const handleDonate = () => {
-        // Aquí puedes agregar la lógica para realizar la donación
-        console.log('Donación realizada al proyecto:', proyectoActual.nombre);
-        alert(`Donación realizada al proyecto: ${proyectoActual.nombre}`);
+        navigation.navigate('Donar', { proyecto: proyectoActual });
     };
 
     return (

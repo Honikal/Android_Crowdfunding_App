@@ -5,115 +5,108 @@ import {
     TextInput,
     TouchableOpacity,
     StyleSheet,
-    Alert,
-    Dimensions
+    Alert
 } from 'react-native';
-// Componente de scroll vertical
-import VerticalScroll from './styleComponents/VerticalScroll';
-// Importamos datos gráficos
-import { FontAwesome } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
-const { width } = Dimensions.get('window');
+const Donate = ({ route }) => {
+    const { proyecto, usuarioActual } = route.params; // Recibe el proyecto y el usuario actual
+    const [monto, setMonto] = useState('');
+    const navigation = useNavigation();
 
-const Donate = ({ route, navigation }) => {
-    // Recibimos la cartera del usuario desde las rutas
-    const { userWallet } = route.params;
-    const [amount, setAmount] = useState('');
-
-    // Función para manejar el envío del formulario
-    const handleDonate = () => {
-        const donationAmount = parseFloat(amount);
-
-        if (isNaN(donationAmount) || donationAmount <= 0) {
-            Alert.alert('Error', 'Por favor ingrese un monto válido.');
+    const handleDonation = () => {
+        const montoNumerico = parseFloat(monto);
+        if (isNaN(montoNumerico) || montoNumerico <= 0) {
+            Alert.alert("Error", "Por favor, ingrese un monto válido.");
             return;
         }
 
-        if (donationAmount > userWallet) {
-            Alert.alert('Error', 'El monto de la donación excede el saldo disponible en su cartera.');
-            return;
-        }
+        if (montoNumerico > 99000000) {
+            Alert.alert("Fondos insuficientes", "No tiene suficientes fondos en su cartera para realizar esta donación.");
+        } else {
+            // Resta el monto de la cartera del usuario
+            99000000 - montoNumerico;
+            Alert.alert("Éxito", `Donaste $${montoNumerico} al proyecto ${proyecto.nombre}.`);
+            // Puedes agregar lógica adicional aquí, como actualizar los fondos del proyecto
 
-        // Lógica para procesar la donación (enviar a API, actualizar estado, etc.)
-        Alert.alert('Éxito', 'Donación realizada con éxito.');
-        setAmount('');
-        navigation.goBack(); // Regresa a la pantalla anterior
+            // Después de la donación, navega de regreso a la pantalla del proyecto o a donde desees
+            navigation.navigate('ProjectDetail', { proyectoActual: proyecto });
+        }
     };
 
     return (
-        <VerticalScroll>
-            <View style={styles.container}>
-                <Text style={styles.title}>Propuestas de Donación</Text>
-                <Text style={styles.info}>Monto disponible en su cartera: ${userWallet.toFixed(2)}</Text>
+        <View style={styles.container}>
+            <Text style={styles.title}>Donar al proyecto: {proyecto.nombre}</Text>
+            <Text style={styles.projectDescription}>{proyecto.descripcion}</Text>
 
-                <View style={styles.inputContainer}>
-                    <FontAwesome name="dollar" style={styles.icon} />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Ingrese monto de la donación"
-                        keyboardType="numeric"
-                        value={amount}
-                        onChangeText={setAmount}
-                    />
-                </View>
-
-                <TouchableOpacity style={styles.button} onPress={handleDonate}>
-                    <Text style={styles.buttonText}>Donar</Text>
-                </TouchableOpacity>
+            <View style={styles.formContainer}>
+                <Text style={styles.label}>Monto a Donar (USD):</Text>
+                <TextInput
+                    style={styles.input}
+                    value={monto}
+                    onChangeText={setMonto}
+                    placeholder="Ingrese el monto"
+                    keyboardType="numeric"
+                />
+                <Text style={styles.walletText}>Fondos disponibles: ${98000000}</Text>
             </View>
-        </VerticalScroll>
+
+            <TouchableOpacity style={styles.donateButton} onPress={handleDonation}>
+                <Text style={styles.donateButtonText}>Donar</Text>
+            </TouchableOpacity>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#A8CEFF',
-        alignItems: 'center',
-        paddingTop: 40,
-        paddingHorizontal: 20,
+        padding: 20,
+        backgroundColor: '#F7F9FC',
     },
     title: {
-        fontSize: 26,
-        color: '#FFF',
-        marginVertical: 20,
-        textAlign: 'center',
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: '#0B3D91',
+        marginTop: 100,
+        marginBottom: 10,
     },
-    info: {
-        fontSize: 18,
-        color: '#FFF',
+    projectDescription: {
+        fontSize: 16,
+        color: '#333',
+        marginBottom: 20,
+    },
+    formContainer: {
         marginBottom: 30,
     },
-    inputContainer: {
-        flexDirection: 'row',
-        width: '100%',
-        padding: 10,
-        marginBottom: 20,
-        backgroundColor: '#FEFEFE',
-        borderRadius: 20,
-        alignItems: 'center',
+    label: {
+        fontSize: 16,
+        marginBottom: 8,
+        color: '#555',
     },
     input: {
-        color: '#000',
+        borderWidth: 1,
+        borderColor: '#DDD',
+        borderRadius: 5,
+        padding: 10,
         fontSize: 16,
-        paddingHorizontal: 10,
-        flex: 1,
+        backgroundColor: '#FFF',
+        marginBottom: 10,
     },
-    icon: {
-        fontSize: 24,
-        padding: 8,
-        color: '#c4c4bc',
+    walletText: {
+        fontSize: 16,
+        color: '#555',
     },
-    button: {
-        width: '60%',
-        paddingVertical: 15,
-        backgroundColor: '#75A1DE',
-        borderRadius: 20,
+    donateButton: {
+        backgroundColor: '#0B3D91',
+        padding: 15,
+        borderRadius: 8,
         alignItems: 'center',
     },
-    buttonText: {
-        color: '#FEFEFE',
+    donateButtonText: {
+        color: '#FFF',
         fontSize: 16,
+        fontWeight: 'bold',
     },
 });
 
