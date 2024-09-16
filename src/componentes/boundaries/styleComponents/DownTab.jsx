@@ -99,9 +99,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: '33.3%',
         height: '100%',
+        opacity: 0.5
     },
     disabledBoton: {
-        opacity: 0.5
+        opacity: 1
     },
     icon: {
         fontSize: 30,
