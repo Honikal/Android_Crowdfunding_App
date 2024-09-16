@@ -4,7 +4,9 @@ import{
     Text,
     TouchableOpacity,  // Añadimos TouchableOpacity para hacer clic en los proyectos
     StyleSheet,
+    
     Image,
+    
     Dimensions,
     PixelRatio,
     TouchableWithoutFeedback
@@ -13,6 +15,7 @@ import{
 //Importamos el tab superior de la pantalla
 import UpTab from "./styleComponents/UpTab";
 import DownTab from "./styleComponents/DownTab";
+import VerticalScroll from "./styleComponents/VerticalScroll";
 
 //Importamos el controlador
 import InitialPage_Ctrl from "../controllers/InitialPageController";
@@ -72,39 +75,41 @@ const InitialPage = ( { route } ) => {
                     setDropdownVisible={setDropdownVisible}
                 />
                 <View style={styles.container}>
-                    {listaProyectos.map((proyecto, index) => (
-                        <View key={index} style={styles.proyectoContainer}>
-                            <View style={styles.seccionProfile}>
-                                <View style={styles.profileIcon}>
-                                    <Text style={styles.profileText}>{obtenerPrimeraLetra(proyecto.creadorNombre)}</Text>
-                                </View>
-                                <View style={styles.columnProyect}>
-                                    <Text style={styles.titleProyect}>{proyecto.nombre}</Text>
-                                    <Text>{proyecto.creadorNombre} </Text>
-                                    {proyecto.estado_proyecto ? (
-                                        <Text>{proyecto.diasRestantes} días restantes   {proyecto.porcentajeFondos}% recaudado</Text>
-                                    ) : (
-                                        <Text>Aún por iniciar   {proyecto.porcentajeFondos}% recaudado</Text>
-                                    )}
+                    <ScrollView nestedScrollEnabled={true}>
+                        {listaProyectos.map((proyecto, index) => (
+                            <View key={index} style={styles.proyectoContainer}>
+                                <ScrollView horizontal={true} style={styles.mediaPreviewContainer} nestedScrollEnabled={true}>
+                                    {proyecto.media && proyecto.media.length > 0 && proyecto.media.map((mediaItem, index) => (
+                                        <Image
+                                            key={index}
+                                            source={{ uri: mediaItem }}
+                                            style={styles.preview}
+                                        />
+                                    ))}
+                                </ScrollView>
 
+                                <View style={styles.seccionProfile}>
+                                    <View style={styles.profileIcon}>
+                                        <Text style={styles.profileText}>{obtenerPrimeraLetra(proyecto.creadorNombre)}</Text>
+                                    </View>
+                                    <View style={styles.columnProyect}>
+                                        <Text style={styles.titleProyect}>{proyecto.nombre}</Text>
+                                        <Text>{proyecto.creadorNombre} </Text>
+                                        {proyecto.estado_proyecto ? (
+                                            <Text>{proyecto.diasRestantes} días restantes   {proyecto.porcentajeFondos}% recaudado</Text>
+                                        ) : (
+                                            <Text>Aún por iniciar   {proyecto.porcentajeFondos}% recaudado</Text>
+                                        )}
+                                    </View>
                                 </View>
+                                <Text style={styles.descriptionProyect} selectable={true}>{proyecto.descripcion} </Text>
+
+                                <Text style={styles.categoriaButton}>{proyecto.categoria}</Text>
                             </View>
-                            <Text style={styles.descriptionProyect} selectable={true}>{proyecto.descripcion} </Text>
-
-                            <ScrollView horizontal={true} style={styles.mediaPreviewContainer}>
-                                {proyecto.media && proyecto.media.length > 0 && proyecto.media.map((mediaItem, index) => {
-                                    <Image
-                                        key={index}
-                                        source={{ uri: mediaItem }}
-                                        style={styles.preview}
-                                    />
-                                })}
-                            </ScrollView>
-
-                            <Text style={styles.categoriaButton}>{proyecto.categoria}</Text>
-                        </View>
-                    ))}
+                        ))}
+                    </ScrollView>
                 </View>
+                
                 <DownTab
                     usuarioActual={usuarioActual}
                     paginaActual={"Pagina Inicial"}
@@ -174,12 +179,13 @@ const styles = StyleSheet.create({
     },
     mediaPreviewContainer: {
         marginVertical: normalize(10),
-        maxHeight: width * 0.5,
-        width: '100%'
+        maxHeight: width * 0.6,
+
+        width: '100%',
     },
     preview: {
-        width: width * 0.8,
-        height: width * 0.5,
+        width: width * 0.9,
+        height: width * 0.6,
         borderRadius: normalize(10),
         marginTop: normalize(15),
 

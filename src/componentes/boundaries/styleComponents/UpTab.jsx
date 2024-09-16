@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     //Sección tab arriba
     upTab: {
         //Orden del campo
-        flexGrow: 1,
+        height: normalize(90),
 
         flexDirection: 'row',
         justifyContent: 'space-between',
