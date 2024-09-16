@@ -36,7 +36,8 @@ export default class CreateProject_Ctrl {
         try {
             const proyectoEntidad = new ProyectoEntidad();
             const proyectoId = await proyectoEntidad.addProyecto(this.#proyecto);
-            this.#proyecto.setIdProyecto = proyectoId;
+
+            console.log("Check to see if our object has the id: ", this.#proyecto.getIdProyecto);
 
             //Guardamos en la base de datos de storage
             await proyectoEntidad.uploadMediaToStorage(proyectoId, this.#proyecto.getMedia);
