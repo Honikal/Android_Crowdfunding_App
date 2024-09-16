@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#0B3979',
         marginBottom: 10,
+        marginTop: 100,
     },
     creator: {
         fontSize: 18,
@@ -81,7 +82,6 @@ const styles = StyleSheet.create({
         color: '#0B3979',
         marginBottom: 20,
     },
-    // Estilos del botón
     button: {
         width: '40%',
         marginVertical: 15,       
