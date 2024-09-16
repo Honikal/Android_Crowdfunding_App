@@ -1,5 +1,5 @@
 import { getDatabase, ref as dbRef, get, push, set, update } from 'firebase/database';
-import { getStorage, ref as storageRef, uploadBytes } from 'firebase/storage';
+import { getDownloadURL, getStorage, ref as storageRef, uploadBytes } from 'firebase/storage';
 import { app } from "../../../firebaseConfig.js";
 
 
@@ -60,11 +60,10 @@ export default class ProyectoEntidad {
                 objetivo_financiero: proyecto.getObjetivoFinanciero,
                 fondos_recaudados: proyecto.getFondosRecaudados,
                 fecha_creacion: proyecto.getFechaCreacion,
-                fecha_limite: proyecto.getFechaLimite,
-                media: proyecto.getMedia
+                fecha_limite: proyecto.getFechaLimite
             });
 
-            return newProyectoRef;
+            return newProyectoRef.key;
         } catch (error) {
             console.error("Error desde la capa entidad intentando crear el proyecto: ", proyecto);
             throw error;
@@ -74,6 +73,9 @@ export default class ProyectoEntidad {
     async uploadMediaToStorage(idProyecto, media) {
         try {
             const storage = getStorage();
+            const mediaUrls = []; //Guardamos las URLS de archivos media
+
+            console.log("Data from idProyecto: ", idProyecto);
 
             for (const uri of media) {
                 //Creamos referencias únicas por cada archivo basado en proyecto ID y un nombre único
@@ -85,7 +87,17 @@ export default class ProyectoEntidad {
 
                 //Cargamos la imagen en el Storage de Firebase
                 await uploadBytes(storageR, blob);
+
+                //Tomamos los URL de descarga del archivo subido
+                const downloadURL = await getDownloadURL(storageR);
+                mediaUrls.push(downloadURL);
             }        
+
+            //Guardamos los archivos de media o las URL en nuestro Realtime Database
+            console.log("Data from idProyecto again before pushing to db: ", idProyecto);
+
+            const proyectoRef = dbRef(this.#db, `projects/${idProyecto}/media`);
+            await set(proyectoRef, mediaUrls); //Guardamos las url dentro de la base de datos de firebase
         } catch (error) {
             console.error("Error desde la capa entidad guardando las imágenes en storage: ", error);
             throw error;

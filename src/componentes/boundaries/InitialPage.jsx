@@ -65,9 +65,11 @@ const InitialPage = ( { route } ) => {
         }
     }
 
+    const obtenerPrimeraLetra = (nombre) => {
+        return nombre.charAt(0).toUpperCase();
+    }
 
-    console.log("Proyectos o lista de proyectos: ", listaProyectos);
-    console.log("Size: ", listaProyectos.length);
+    console.log("Enlistado de proyectos: ", listaProyectos);
 
     //Checar que se estén cargando los datos en el sistema en la página
     return(
@@ -84,7 +86,7 @@ const InitialPage = ( { route } ) => {
                         <View key={index} style={styles.proyectoContainer}>
                             <View style={styles.seccionProfile}>
                                 <View style={styles.profileIcon}>
-                                    <Text>I</Text>
+                                    <Text style={styles.profileText}>{obtenerPrimeraLetra(proyecto.creadorNombre)}</Text>
                                 </View>
                                 <View style={styles.columnProyect}>
                                     <Text style={styles.titleProyect}>{proyecto.nombre}</Text>
@@ -97,22 +99,16 @@ const InitialPage = ( { route } ) => {
 
                                 </View>
                             </View>
-                            <Text style={styles.descriptionProyect}>{proyecto.descripcion} </Text>
+                            <Text style={styles.descriptionProyect} selectable={true}>{proyecto.descripcion} </Text>
 
-                            <ScrollView horizontal={true}>
-                                {proyecto.media > 0 && proyecto.media.map((mediaItem, index) => {
-                                    return mediaItem.type === "image" ? (
-                                        <Image
-                                            key={index}
-                                            source={{ uri: mediaItem.uri }}
-                                            style={styles.preview}
-                                        />
-                                    ) : mediaItem.type === "video" ? (
-                                        <Image
-                                        />
-                                    ) : null;
+                            <ScrollView horizontal={true} style={styles.mediaPreviewContainer}>
+                                {proyecto.media && proyecto.media.length > 0 && proyecto.media.map((mediaItem, index) => {
+                                    <Image
+                                        key={index}
+                                        source={{ uri: mediaItem.uri }}
+                                        style={styles.preview}
+                                    />
                                 })}
-
                             </ScrollView>
 
                             <Text style={styles.categoriaButton}>{proyecto.categoria}</Text>
@@ -177,6 +173,12 @@ const styles = StyleSheet.create({
         borderBottomColor: '#75A1DE',
         borderLeftColor: '#75A1DE',
     },
+    profileText: {
+        marginTop: 0,
+        fontSize: normalize(19),
+        fontWeight: 'bold',
+        color: '#ECF7FD',
+    },
     columnProyect: {
         marginLeft: 10,
     },
@@ -190,7 +192,10 @@ const styles = StyleSheet.create({
         marginTop: 8,
     },
 
-
+    mediaPreviewContainer: {
+        marginVertical: 10,
+        maxHeight: width * 0.5,
+    },
     preview: {
         width: width * 0.8,
         height: width * 0.5,
