@@ -31,7 +31,7 @@ const ProjectDetail = ({ route }) => {
                 {proyectoActual.media && proyectoActual.media.length > 0 && proyectoActual.media.map((mediaItem, index) => (
                     <Image
                         key={index}
-                        source={{ uri: mediaItem.uri }}
+                        source={{ uri: mediaItem }}
                         style={styles.media}
                     />
                 ))}

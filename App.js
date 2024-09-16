@@ -69,7 +69,10 @@ export default function App() {
           name='Editar Proyecto'
           component={EditProject}
           options={{ headerShown: false }}
-          initialParams={{ proyectoActual: null }}
+          initialParams={{
+            usuarioActual: null,
+            proyectoActual: null
+          }}
         />
         {/* Añade la nueva pantalla para configuración de notificaciones */}
         <Stack.Screen
@@ -88,7 +91,7 @@ export default function App() {
           name='Mis Proyectos'
           component={MyProjects}
           options={{ headerShown: false }}
-          initialParams={{ proyectoActual: null }}
+          initialParams={{ usuarioActual: null }}
         />
 
         <Stack.Screen

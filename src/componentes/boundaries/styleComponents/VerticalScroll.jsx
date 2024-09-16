@@ -8,7 +8,7 @@ import {
 export default VerticalScroll = ( {children } ) => {
     return (
         <View style={styles.container}>
-            <ScrollView contentContainerStyle={styles.contentContainer}>
+            <ScrollView contentContainerStyle={styles.contentContainer} nestedScrollEnabled={true}>
                 {children}
             </ScrollView>
         </View>
@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     contentContainer: {
-        flexGrow: 1
+        flexGrow: 1,
+        justifyContent: 'flex-start'
     }
 });

@@ -11,8 +11,12 @@ import {
     ScrollView,
 } from 'react-native';
 
+//Importamos el controlador
+
+
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
+
 import { FontAwesome } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
