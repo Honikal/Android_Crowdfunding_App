@@ -10,6 +10,7 @@ import NewProjectPage from './src/componentes/boundaries/NewProjectPage';
 import EditProject from './src/componentes/boundaries/EditProjectPage';
 import UserManagement from './src/componentes/boundaries/UserManagement';
 import NotificationSettings from './src/componentes/boundaries/ConfigurationsPage';  // Importa la nueva pantalla
+import ProjectDetail from './src/componentes/boundaries/ProjectDetail';  // Importa la nueva pantalla
 
 // Sistema para implementar navegación
 import { NavigationContainer } from '@react-navigation/native';
@@ -74,6 +75,13 @@ export default function App() {
           component={NotificationSettings}
           options={{ headerShown: false }}
         />
+
+        <Stack.Screen
+            name="Detalle Proyecto"
+            component={ProjectDetail}
+            options={{ headerShown: false }}
+        />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
