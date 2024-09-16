@@ -329,7 +329,8 @@ const styles = StyleSheet.create({
     },
     button: {
         width: '40%',
-        marginVertical: 15,
+        marginVertical: 5,
+        marginBottom: 100,
         padding: 10,
         alignItems: 'center',
         backgroundColor: '#75A1DE',
