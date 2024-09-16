@@ -111,7 +111,7 @@ const CreateProject = ( {route} ) => {
             const mediaUris = media.map(mediaItem => mediaItem.uri);
             
             const registrar = new CreateProject_Ctrl(usuarioActual.getIdUsuario, projectName, description,
-                category, fundingGoal, formatDate(startDate), formatDate(endDate), mediaUris);
+                category, parseFloat(fundingGoal), formatDate(startDate), formatDate(endDate), mediaUris);
 
             const proyectoActual = await registrar.crearProyecto();
             
