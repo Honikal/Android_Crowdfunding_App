@@ -12,6 +12,7 @@ import UserManagement from './src/componentes/boundaries/UserManagement';
 import NotificationSettings from './src/componentes/boundaries/ConfigurationsPage';  // Importa la nueva pantalla
 import ProjectDetail from './src/componentes/boundaries/ProjectDetail';  // Importa la nueva pantalla
 import MyProjects from './src/componentes/boundaries/MyProjects';
+import Donate from './src/componentes/boundaries/Donate';
 
 // Sistema para implementar navegación
 import { NavigationContainer } from '@react-navigation/native';
@@ -86,6 +87,13 @@ export default function App() {
         <Stack.Screen
           name='Mis Proyectos'
           component={MyProjects}
+          options={{ headerShown: false }}
+          initialParams={{ proyectoActual: null }}
+        />
+
+        <Stack.Screen
+          name='Donar'
+          component={Donate}
           options={{ headerShown: false }}
           initialParams={{ proyectoActual: null }}
         />
