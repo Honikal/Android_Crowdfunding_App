@@ -28,7 +28,7 @@ export default class CreateProject_Ctrl {
         media = []
     ){
         this.#proyecto = new Proyecto('', idCreador, nombre, descripcion, categoria,
-        objetivoFinanciero, 0, fechaCreacion, fechaLimite, media);
+        objetivoFinanciero, 0.0, fechaCreacion, fechaLimite, media);
     }
 
     //Registrar el proyecto

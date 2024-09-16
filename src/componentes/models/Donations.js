@@ -20,13 +20,14 @@ export default class Donacion{
         idDonador = '',
         idProyectoBeneficiado = '',
         infoDonante = '',
-        monto = 0.0
+        monto = 0.0,
     ){
         this.#idDonacion = idDonacion,
         this.#idDonador = idDonador,
         this.#idProyectoBeneficiado = idProyectoBeneficiado,
         this.#infoDonante = infoDonante,
-        this.#monto = monto
+        this.#monto = monto,
+        this.#fecha_donacion = formatDate(new Date());
     }
 
     //Getters
@@ -44,6 +45,9 @@ export default class Donacion{
     }
     get getMonto(){
         return this.#monto;
+    }
+    get getFechaDonacion(){
+        return this.#fecha_donacion;
     }
 
     //Setters
@@ -92,6 +96,18 @@ export default class Donacion{
             Monto de donación: ${this.#monto}
         `;
         console.log(proyectoData);
+    }
+
+    formatDate = (rawDate) => {
+        /*Mediante ésta función, actualizamos los datos o información de las fechas agregando un formato
+        específico, en éste caso, usaremos formato   dd/mm/aaaa */
+        let date = new Date(rawDate);
+
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        let day = date.getDate();
+
+        return `${day}/${month}/${year}`;
     }
 
 }

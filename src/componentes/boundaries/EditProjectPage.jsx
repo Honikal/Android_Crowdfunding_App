@@ -20,9 +20,7 @@ const EditProjectPage = ({ route, navigation }) => {
     const { proyecto, usuarioActual } = route.params;
     const [projectName, setProjectName] = useState(proyecto.getNombre);
     const [description, setDescription] = useState(proyecto.getDescripcion);
-    const [fundingGoal, setFundingGoal] = useState(
-     proyecto.getMetaFinanciamiento ? proyecto.getMetaFinanciamiento.toString() : '0'
-    );
+    const [fundingGoal, setFundingGoal] = useState(proyecto.getObjetivoFinanciero.toString());
     const [category, setCategory] = useState(proyecto.getCategoria);
     const [media, setMedia] = useState(proyecto.getMedia || []);
     const [startDate, setStartDate] = useState(new Date(proyecto.getFechaCreacion));
