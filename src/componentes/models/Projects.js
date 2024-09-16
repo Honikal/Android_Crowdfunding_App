@@ -79,7 +79,7 @@ export default class Proyecto{
     }
 
     //Setters
-    set setIdUsuario(value){
+    set setIdProyecto(value){
         /**
          * setter usuario_id
          * @param {string} value     - Valor de entrada generado criptográficamente como id
@@ -150,7 +150,7 @@ export default class Proyecto{
             Id del creador: ${this.#idCreador}
             Nombre Proyecto: ${this.#nombre}
             Descripcion: ${this.getDescripcion}
-            Monto esperado a alcanzar: ${this.getAreaTrabajo}
+            Monto esperado a alcanzar: ${this.getObjetivoFinanciero}
             Fondos actuales: ${this.getFondosRecaudados}
             Fecha límite de entrega del proyecto: ${this.getFechaLimite}
             Lista de códigos de media: ${this.getMedia}
