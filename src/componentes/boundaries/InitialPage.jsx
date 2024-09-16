@@ -73,35 +73,36 @@ const InitialPage = ( { route } ) => {
                 />
                 <View style={styles.container}>
                     {listaProyectos.map((proyecto, index) => (
-                        <TouchableOpacity key={index} onPress={() => handleProjectPress(proyecto)}>
-                            <View style={styles.proyectoContainer}>
-                                <View style={styles.seccionProfile}>
-                                    <View style={styles.profileIcon}>
-                                        <Text style={styles.profileText}>{obtenerPrimeraLetra(proyecto.creadorNombre)}</Text>
-                                    </View>
-                                    <View style={styles.columnProyect}>
-                                        <Text style={styles.titleProyect}>{proyecto.nombre}</Text>
-                                        <Text>{proyecto.creadorNombre} </Text>
-                                        {proyecto.estado_proyecto ? (
-                                            <Text>{proyecto.diasRestantes}   {proyecto.porcentajeFondos}</Text>
-                                        ) : (
-                                            <Text>Aún por iniciar   {proyecto.porcentajeFondos}% recaudado</Text>
-                                        )}
-                                    </View>
+                        <View key={index} style={styles.proyectoContainer}>
+                            <View style={styles.seccionProfile}>
+                                <View style={styles.profileIcon}>
+                                    <Text style={styles.profileText}>{obtenerPrimeraLetra(proyecto.creadorNombre)}</Text>
                                 </View>
-                                <Text style={styles.descriptionProyect} selectable={true}>{proyecto.descripcion}</Text>
-                                <ScrollView horizontal={true} style={styles.mediaPreviewContainer}>
-                                    {proyecto.media && proyecto.media.length > 0 && proyecto.media.map((mediaItem, index) => (
-                                        <Image
-                                            key={index}
-                                            source={{ uri: mediaItem.uri }}
-                                            style={styles.preview}
-                                        />
-                                    ))}
-                                </ScrollView>
-                                <Text style={styles.categoriaButton}>{proyecto.categoria}</Text>
+                                <View style={styles.columnProyect}>
+                                    <Text style={styles.titleProyect}>{proyecto.nombre}</Text>
+                                    <Text>{proyecto.creadorNombre} </Text>
+                                    {proyecto.estado_proyecto ? (
+                                        <Text>{proyecto.diasRestantes} días restantes   {proyecto.porcentajeFondos}% recaudado</Text>
+                                    ) : (
+                                        <Text>Aún por iniciar   {proyecto.porcentajeFondos}% recaudado</Text>
+                                    )}
+
+                                </View>
                             </View>
-                        </TouchableOpacity>
+                            <Text style={styles.descriptionProyect} selectable={true}>{proyecto.descripcion} </Text>
+
+                            <ScrollView horizontal={true} style={styles.mediaPreviewContainer}>
+                                {proyecto.media && proyecto.media.length > 0 && proyecto.media.map((mediaItem, index) => {
+                                    <Image
+                                        key={index}
+                                        source={{ uri: mediaItem }}
+                                        style={styles.preview}
+                                    />
+                                })}
+                            </ScrollView>
+
+                            <Text style={styles.categoriaButton}>{proyecto.categoria}</Text>
+                        </View>
                     ))}
                 </View>
                 <DownTab
@@ -172,14 +173,17 @@ const styles = StyleSheet.create({
         marginTop: 8,
     },
     mediaPreviewContainer: {
-        marginVertical: 10,
+        marginVertical: normalize(10),
         maxHeight: width * 0.5,
+        width: '100%'
     },
     preview: {
         width: width * 0.8,
         height: width * 0.5,
-        borderRadius: 10,
-        marginTop: 15,
+        borderRadius: normalize(10),
+        marginTop: normalize(15),
+
+        resizeMode: 'contain',
     },
     categoriaButton: {
         marginTop: normalize(6),
