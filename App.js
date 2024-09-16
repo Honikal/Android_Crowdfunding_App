@@ -8,6 +8,7 @@ import ModifyAccount from './src/componentes/boundaries/ModifyAccount';
 import SearchPage from './src/componentes/boundaries/SearchPage';
 import NewProjectPage from './src/componentes/boundaries/NewProjectPage';
 import EditProject from './src/componentes/boundaries/EditProjectPage';
+import UserManagement from './src/componentes/boundaries/UserManagement';
 import NotificationSettings from './src/componentes/boundaries/ConfigurationsPage';  // Importa la nueva pantalla
 
 // Sistema para implementar navegación
@@ -46,6 +47,12 @@ export default function App() {
         <Stack.Screen
           name='Busqueda'
           component={SearchPage}
+          options={{ headerShown: false }}
+          initialParams={{ usuarioActual: null }}
+        />
+        <Stack.Screen
+          name='Gestionar Usuario'
+          component={UserManagement}
           options={{ headerShown: false }}
           initialParams={{ usuarioActual: null }}
         />
