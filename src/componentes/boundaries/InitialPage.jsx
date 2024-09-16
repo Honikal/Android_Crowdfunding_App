@@ -122,12 +122,12 @@ const normalize = (size) => {
 
 const styles = StyleSheet.create({
     container: {
-        width: '100%',
-        height: '70%',
-        flexGrow: 1,
-        backgroundColor: '#A8CEFF',
-        alignItems: 'center',
-        justifyContent: 'center',
+      width: '100%',
+      height: '80%',
+      flexGrow: 1,
+      backgroundColor: '#A8CEFF',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     proyectoContainer: {
         width: '100%',
