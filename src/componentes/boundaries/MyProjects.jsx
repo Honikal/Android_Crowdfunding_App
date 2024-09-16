@@ -166,6 +166,8 @@ const styles = StyleSheet.create({
         height: width * 0.5,
         borderRadius: normalize(10),
         marginTop: normalize(15),
+
+        resizeMode: 'contain',
     },
 
     // Project information, text and categories
