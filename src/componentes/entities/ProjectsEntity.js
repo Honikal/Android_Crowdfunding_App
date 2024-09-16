@@ -2,7 +2,6 @@ import { getDatabase, ref as dbRef, get, push, set, update } from 'firebase/data
 import { getDownloadURL, getStorage, ref as storageRef, uploadBytes } from 'firebase/storage';
 import { app } from "../../../firebaseConfig.js";
 
-
 import Proyecto from "../models/Projects.js"
 
 export default class ProyectoEntidad {
@@ -31,6 +30,35 @@ export default class ProyectoEntidad {
                     }
                 })
                 return proyectos;
+            } else {
+                return [];
+            }
+        } catch (error) {
+            console.error("Error desde la capa entidad extrayendo los proyectos del sistema: ", error);
+            throw error;
+        }
+    }
+
+    /**
+     * Función encargada de retornar todos los proyectos de la tabla, que estén conectados con el idUsuario
+     * @param {String} idUsuario
+     * @returns {Promise<Proyecto[]>}                    
+     */
+    async getProyectosByIdUsuario(idUsuario){
+        try {
+            const snapshot = await get(this.#dbRef);
+            if (snapshot.exists()){
+                const proyectosData = snapshot.val();
+                const proyectos = Object.keys(proyectosData).map(id => {
+                    return {
+                        ...proyectosData[id],
+                        idProyecto: id
+                    }
+                })
+
+                //Checamos que el usuario esté en la lista de colaboradores
+                const proyectos_usuario = proyectos.filter(proj => proj.id_creador === idUsuario);
+                return proyectos_usuario
             } else {
                 return [];
             }
@@ -123,6 +151,22 @@ export default class ProyectoEntidad {
         }
     }
 
+    /**
+     * Función encargada de aplicar formato de base de datos a proyecto clase
+     * @async
+     * @param {Object} proyectoData           - Objeto de usuario extraído del sistema
+     * @returns {Proyecto}                    - Retorna la clase usuario como tal
+     */
+    createProyectoFromData ( proyectoData ){
+        //Extraemos la data de la base de datos como tal
+        const { idProyecto, id_creador, nombre, descripcion, categoria, objetivo_financiero, fondos_recaudados,
+            fecha_creacion, fecha_limite, media } = proyectoData;
+
+        const proyecto = new Proyecto(idProyecto, id_creador, nombre, descripcion, categoria, objetivo_financiero,
+            fondos_recaudados, fecha_creacion, fecha_limite, media);
+
+        return proyecto;
+    }
 
 }
 

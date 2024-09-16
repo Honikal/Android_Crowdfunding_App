@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     //Sección tab arriba
     downTab: {
         flexDirection: 'row',
-        height: '20%',
+        height: '10%',
         width: '100%',
 
         alignItems: 'center',
