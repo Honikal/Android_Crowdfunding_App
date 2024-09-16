@@ -59,9 +59,13 @@ export default UpTab = ({ usuarioActual, dropdownVisible, setDropdownVisible }) 
     }
 
     const handleModificarUsuario = () => {
-        
         setDropdownVisible(false);
-        navigation.navigate('Modificar Usuario', { usuarioActual: usuarioActual });
+        navigation.navigate('Modificar Cuenta', { usuarioActual: usuarioActual });
+    }
+
+    const handleGestionarUsuario = () => {
+        setDropdownVisible(false);
+        navigation.navigate('Gestionar Usuario', { usuarioActual: usuarioActual });
     }
     
     const handleMyProjects = async() => {
@@ -101,12 +105,14 @@ export default UpTab = ({ usuarioActual, dropdownVisible, setDropdownVisible }) 
                         <Text>¡Hola {usuarioActual.getNombre}!</Text>
                     </View>
 
-
                     <TouchableOpacity onPress={handleModificarUsuario} style={styles.dropdownItem}>
                         <Text style={styles.dropdownItemText}> Modificar cuenta </Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={handleMyProjects} style={styles.dropdownItem}>
                         <Text style={styles.dropdownItemText}> Mis proyectos </Text>
+                    </TouchableOpacity>
+                     <TouchableOpacity onPress={handleGestionarUsuario} style={styles.dropdownItem}>
+                        <Text style={styles.dropdownItemText}> Gestionar Usuarios </Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={handleConfigurations} style={styles.dropdownItem}>
                         <Text style={styles.dropdownItemText}> Configuraciones </Text>
