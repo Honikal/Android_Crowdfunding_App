@@ -92,7 +92,7 @@ const InitialPage = ( { route } ) => {
                                     <Text style={styles.titleProyect}>{proyecto.nombre}</Text>
                                     <Text>{proyecto.creadorNombre} </Text>
                                     {proyecto.estado_proyecto ? (
-                                        <Text>{proyecto.diasRestantes}   {proyecto.porcentajeFondos}</Text>
+                                        <Text>{proyecto.diasRestantes} días restantes   {proyecto.porcentajeFondos}% recaudado</Text>
                                     ) : (
                                         <Text>Aún por iniciar   {proyecto.porcentajeFondos}% recaudado</Text>
                                     )}
@@ -105,7 +105,7 @@ const InitialPage = ( { route } ) => {
                                 {proyecto.media && proyecto.media.length > 0 && proyecto.media.map((mediaItem, index) => {
                                     <Image
                                         key={index}
-                                        source={{ uri: mediaItem.uri }}
+                                        source={{ uri: mediaItem }}
                                         style={styles.preview}
                                     />
                                 })}
@@ -193,14 +193,17 @@ const styles = StyleSheet.create({
     },
 
     mediaPreviewContainer: {
-        marginVertical: 10,
+        marginVertical: normalize(10),
         maxHeight: width * 0.5,
+        width: '100%'
     },
     preview: {
         width: width * 0.8,
         height: width * 0.5,
-        borderRadius: 10,
-        marginTop: 15,
+        borderRadius: normalize(10),
+        marginTop: normalize(15),
+
+        resizeMode: 'contain',
     },
     categoriaButton: {
         marginTop: normalize(6),
