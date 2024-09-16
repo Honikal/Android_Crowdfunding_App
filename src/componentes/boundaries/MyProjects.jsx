@@ -68,8 +68,16 @@ const MyProjects = ( { route } ) => {
         }
     }
 
-    const obtenerPrimeraLetra = (nombre) => {
-        return nombre.charAt(0).toUpperCase();
+    const manejarBotonProyecto = (proyecto) => {
+        console.log("Entrando al método para cambiar a editar proyecto: ")
+        proyecto.showData();
+        navigation.navigate(
+            'Editar Proyecto',
+            {
+                usuarioActual: usuarioActual,
+                proyectoActual: proyecto
+            }
+        )
     }
 
     //Checar que se estén cargando los datos en el sistema en la página
@@ -82,7 +90,7 @@ const MyProjects = ( { route } ) => {
                     setDropdownVisible={setDropdownVisible}  //Pasamos el setter al UpTab
                 />
 
-                <ScrollView nestedScrollEnabled={true}>
+                <ScrollView>
                     {listaProyectos.map((proyecto, index) => (
                         <View style={styles.fullProjectContainer} key={index} >
                             <View style={styles.mediaPreviewContainer}>
@@ -99,7 +107,7 @@ const MyProjects = ( { route } ) => {
                             </View>
                             
                             <View style={[styles.proyectInfoContainer, styles.optionsContainer]}>
-                                <TouchableOpacity style={[styles.iconButtons]}>
+                                <TouchableOpacity style={[styles.iconButtons]} onPress={() => manejarBotonProyecto(proyecto)}>
                                     <FontAwesome name="cog" style={styles.icon}/>
                                 </TouchableOpacity>
                             </View>

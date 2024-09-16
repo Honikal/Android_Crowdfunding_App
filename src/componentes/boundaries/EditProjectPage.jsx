@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 
 //Importamos el controlador
-
+import ModifyProject_Ctrl from '../controllers/ModifyProjectController';
 
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -21,14 +21,26 @@ import { FontAwesome } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
 const EditProjectPage = ({ route, navigation }) => {
-    const { proyecto, usuarioActual } = route.params;
-    const [projectName, setProjectName] = useState(proyecto.getNombre);
-    const [description, setDescription] = useState(proyecto.getDescripcion);
-    const [fundingGoal, setFundingGoal] = useState(proyecto.getObjetivoFinanciero.toString());
-    const [category, setCategory] = useState(proyecto.getCategoria);
-    const [media, setMedia] = useState(proyecto.getMedia || []);
-    const [startDate, setStartDate] = useState(new Date(proyecto.getFechaCreacion));
-    const [endDate, setEndDate] = useState(new Date(proyecto.getFechaLimite));
+    const { usuarioActual } = route.params;
+    const { proyectoActual } = route.params;
+
+    console.log("Prueba dentro del edit de proyectos: ");
+    proyectoActual.showData();
+
+    const parseDate = (dateString) => {
+        const [day, month, year] = dateString.split('/');
+        return new Date(`${year}-${month}-${day}`);
+    }
+
+    const [projectName, setProjectName] = useState(proyectoActual.getNombre);
+    const [description, setDescription] = useState(proyectoActual.getDescripcion);
+    const [fundingGoal, setFundingGoal] = useState(proyectoActual.getObjetivoFinanciero.toString());
+    const [category, setCategory] = useState(proyectoActual.getCategoria);
+    const [media, setMedia] = useState(proyectoActual.getMedia || []);
+
+    const [startDate, setStartDate] = useState( parseDate(proyectoActual.getFechaCreacion) );
+    const [endDate, setEndDate] = useState( parseDate(proyectoActual.getFechaLimite) );
+
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
@@ -57,15 +69,50 @@ const EditProjectPage = ({ route, navigation }) => {
     };
 
     const handleUpdateProject = async () => {
+        // Aquí pones la lógica para actualizar el proyecto en la base de datos
+        if (!projectName.trim() || !description.trim() || !fundingGoal.trim() 
+        || category === "Seleccionar Categoría"){
+            Alert.alert('Campos obligatorios', 'Por favor complete todos los campos');
+            return;
+        }
+
         try {
-            // Aquí pones la lógica para actualizar el proyecto en la base de datos
-            Alert.alert('Proyecto Actualizado', 'Los cambios se han guardado exitosamente.');
-            navigation.goBack();
+            const modificarProyecto = new ModifyProject_Ctrl(
+                proyectoActual,
+                projectName,
+                description,
+                fundingGoal,
+                category,
+                formatDate(startDate),
+                formatDate(endDate),
+                media
+            );
+
+            const proyectoModificado = modificarProyecto.modifyProject();
+
+            if (proyectoModificado){
+                Alert.alert('Proyecto Actualizado', 'Los cambios se han guardado exitosamente.');
+                navigation.goBack();
+            }else{
+                console.log("No se efectuaron los cambios");
+            }
         } catch (error) {
             console.error('Error actualizando proyecto:', error);
             Alert.alert('Error', 'Hubo un problema al actualizar el proyecto.');
         }
     };
+
+    const formatDate = (rawDate) => {
+        /*Mediante ésta función, actualizamos los datos o información de las fechas agregando un formato
+        específico, en éste caso, usaremos formato   dd/mm/aaaa */
+        let date = new Date(rawDate);
+
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        let day = date.getDate();
+
+        return `${day}/${month}/${year}`;
+    }
 
     const onStartDateChange = (event, selectedDate) => {
         setShowStartDatePicker(false);
@@ -80,6 +127,8 @@ const EditProjectPage = ({ route, navigation }) => {
             setEndDate(selectedDate);
         }
     };
+
+    console.log("Datos en media: ", media);
 
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -174,15 +223,15 @@ const EditProjectPage = ({ route, navigation }) => {
                     </Text>
                 </TouchableOpacity>
 
-                <View style={styles.mediaPreviewContainer}>
-                    {media.map((mediaItem, index) => (
+                <ScrollView horizontal={true} style={styles.mediaPreviewContainer}>
+                    {media.length > 0 && media.map((mediaItem, index) => (
                         <Image
                             key={index}
-                            source={{ uri: mediaItem.uri }}
+                            source={{ uri: mediaItem }}
                             style={styles.preview}
                         />
                     ))}
-                </View>
+                </ScrollView>
 
                 <TouchableOpacity onPress={handleUpdateProject} style={styles.button}>
                     <Text style={styles.buttonText}>Actualizar Proyecto</Text>
@@ -260,6 +309,8 @@ const styles = StyleSheet.create({
         width: '100%',
         height: Dimensions.get('window').width * 0.5,
         borderRadius: 10,
+
+        resizeMode: 'contain',
     },
     button: {
         width: '40%',

@@ -22,7 +22,7 @@ import InitialPage_Ctrl from "../controllers/InitialPageController";
 
 //Importamos el sistema de navegación
 import { useNavigation, useIsFocused } from '@react-navigation/native';
-import { ScrollView } from "react-native-gesture-handler";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
 
 const InitialPage = ( { route } ) => {
     const { usuarioActual } = route.params;
@@ -75,7 +75,7 @@ const InitialPage = ( { route } ) => {
                     setDropdownVisible={setDropdownVisible}
                 />
                 <View style={styles.container}>
-                    <ScrollView nestedScrollEnabled={true}>
+                    <ScrollView>
                         {listaProyectos.map((proyecto, index) => (
                             <View key={index} style={styles.proyectoContainer}>
                                 <ScrollView horizontal={true} style={styles.mediaPreviewContainer} nestedScrollEnabled={true}>
@@ -88,6 +88,22 @@ const InitialPage = ( { route } ) => {
                                     ))}
                                 </ScrollView>
 
+                                {/* 
+                                <FlatList
+                                    data={proyecto.media}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    renderItem={({item}) => (
+                                        <Image
+                                            source={{ uri: item }}
+                                            style={styles.preview}
+                                        />
+                                    )}
+                                    horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+                                    nestedScrollEnabled={true}
+                                />
+                                */}
+                                
                                 <View style={styles.seccionProfile}>
                                     <View style={styles.profileIcon}>
                                         <Text style={styles.profileText}>{obtenerPrimeraLetra(proyecto.creadorNombre)}</Text>
@@ -128,12 +144,12 @@ const normalize = (size) => {
 
 const styles = StyleSheet.create({
     container: {
-      width: '100%',
-      height: '80%',
-      flexGrow: 1,
-      backgroundColor: '#A8CEFF',
-      alignItems: 'center',
-      justifyContent: 'center',
+        width: '100%',
+        height: '80%',
+        flexGrow: 1,
+        backgroundColor: '#A8CEFF',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     proyectoContainer: {
         width: '100%',
