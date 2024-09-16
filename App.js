@@ -10,6 +10,7 @@ import NewProjectPage from './src/componentes/boundaries/NewProjectPage';
 import EditProject from './src/componentes/boundaries/EditProjectPage';
 import UserManagement from './src/componentes/boundaries/UserManagement';
 import NotificationSettings from './src/componentes/boundaries/ConfigurationsPage';  // Importa la nueva pantalla
+import MyProjects from './src/componentes/boundaries/MyProjects';
 
 // Sistema para implementar navegación
 import { NavigationContainer } from '@react-navigation/native';
@@ -73,6 +74,12 @@ export default function App() {
           name='Configuraciones'
           component={NotificationSettings}
           options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='Mis Proyectos'
+          component={MyProjects}
+          options={{ headerShown: false }}
+          initialParams={{ proyectoActual: null }}
         />
       </Stack.Navigator>
     </NavigationContainer>
