@@ -1,7 +1,8 @@
 import DonacionEntidad from "../entities/DonationsEntity";
+import ProyectoEntidad from "../entities/ProjectsEntity";
+import UsuarioEntidad from "../entities/UserEntity";
 
 import Usuario from "../models/Users";
-import Donacion from "../models/Donations";
 
 export default class DonationsExtract_Ctrl {
     #usuarioActual;
@@ -13,6 +14,43 @@ export default class DonationsExtract_Ctrl {
         usuarioActual = null,
     ){
         this.#usuarioActual = usuarioActual;
+    }
+
+    async formatDonacion( donacionData ){
+        const {
+            idDonacion,
+            id_donador,
+            id_proyecto_beneficiado,
+            monto,
+            info_donante,
+            fecha_donacion
+        } = donacionData;
+
+        try {
+            const usuarioEntidad = new UsuarioEntidad();
+            const proyectoEntidad = new ProyectoEntidad();
+
+            const donadorData = usuarioEntidad.createUsuarioFromData(await usuarioEntidad.getUsuarioByID(id_donador));
+            const proyectoData = proyectoEntidad.createProyectoFromData(await proyectoEntidad.getProyectoByID(id_proyecto_beneficiado));
+
+            const donadorName = donadorData.getNombre
+            const projectoName= proyectoData.getNombre
+
+            const donacionEnriquecida = {
+                idDonacion,
+                id_donador,
+                id_proyecto_beneficiado,
+                donadorName,
+                projectoName,
+                monto,
+                fecha_donacion
+            }
+
+            return donacionEnriquecida;
+        } catch (error) {
+            console.error("Error desde la capa de control creando un objeto práctico: ");
+            throw error;
+        }
     }
 
     async extraerDonaciones(){
@@ -29,7 +67,7 @@ export default class DonationsExtract_Ctrl {
             }
 
             for (const donacionData of donaciones) {
-                const donacion = donacionEntidad.createDonacionFromData(donacionData);
+                const donacion = await this.formatDonacion(donacionData);
                 donacionesRetornar.push(donacion);
             }
 

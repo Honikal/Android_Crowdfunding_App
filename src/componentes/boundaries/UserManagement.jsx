@@ -1,46 +1,54 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Switch, TouchableOpacity, FlatList, StyleSheet, Alert, ActivityIndicator } from "react-native";
-// import axios from "axios"; // Se utilizará una vez que los de backend conecten el API
+import {
+    View,
+    Text,
+    Switch,
+    TouchableOpacity,
+    FlatList,
+    StyleSheet,
+    Alert,
+    ActivityIndicator
+} from "react-native";
+
+//Importamos controlador
+import UserManagement_Ctrl from "../controllers/UserManagementController";
 
 const UserManagement = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Simulación de datos de usuarios (esto es temporal)
-    const mockUsers = [
-        { id: 1, name: 'Jose Rodriguez', active: true },
-        { id: 2, name: 'Juan Vargas', active: false },
-        { id: 3, name: 'Luis Perez', active: true },
-        { id: 4, name: 'Maria Mora', active: false }
-    ];
-
-    // Función para obtener los usuarios de la base de datos
-    const fetchUsers = async () => {
-        try {
-            // Aquí iría la llamada real
-            setTimeout(() => {
-                setUsers(mockUsers);
-                setLoading(false);
-            }, 1000);
-        } catch (error) {
-            Alert.alert("Error", "No se pudieron cargar los usuarios.");
-            setLoading(false);
-        }
-    };
-
     // useEffect para ejecutar fetchUsers al cargar la pantalla
     useEffect(() => {
+        // Función para obtener los usuarios de la base de datos
+        const fetchUsers = async () => {
+            const controlador = new UserManagement_Ctrl();
+            try {
+                const usuarios = await controlador.getUsuariosPrograma();
+                setTimeout(() => {
+                    setUsers(usuarios);
+                    setLoading(false);
+                }, 1000);
+            } catch (error) {
+                Alert.alert("Error", "No se pudieron cargar los usuarios.");
+                console.error("Error en la capa de vista: ", error);
+                setLoading(false);
+            }
+        };
+
         fetchUsers();
     }, []);
 
     // Función para cambiar el estado activo de un usuario
     const toggleUserActive = async (id, currentStatus) => {
         try {
-            // Aquí iría la llamada para actualizar el estado
-
-            setUsers(users.map(user =>
-                user.id === id ? { ...user, active: !user.active } : user
-            ));
+            const updatedUsers = users.map(user => {
+                if (user.getIdUsuario === id){
+                    //Llamamos al método de ser activa en el objeto de usuario
+                    user.setActiva(!user.isActiva);
+                }
+            });
+            //Actualizamos el estado como tal
+            setUsers(updatedUsers);
         } catch (error) {
             Alert.alert("Error", "No se pudo actualizar el estado del usuario.");
         }
@@ -48,6 +56,8 @@ const UserManagement = () => {
 
     // Función para gestionar el perfil de un usuario
     const manageUserProfile = (user) => {
+        console.log("Datos actualizados: ", user);
+
         Alert.alert("Gestión de Perfil", `Gestionar el perfil de ${user.name}`);
         // Lógica para editar perfil
     };
@@ -55,10 +65,10 @@ const UserManagement = () => {
     // Renderizamos cada usuario en la lista
     const renderUserItem = ({ item }) => (
         <View style={styles.userContainer}>
-            <Text style={styles.userName}>{item.name}</Text>
+            <Text style={styles.userName}>{item.getNombre}</Text>
             <Switch
-                value={item.active}
-                onValueChange={() => toggleUserActive(item.id, item.active)}
+                value={item.isActiva}
+                onValueChange={() => toggleUserActive(item.getIdUsuario, item.isActiva)}
             />
             <TouchableOpacity
                 style={styles.manageButton}
@@ -85,7 +95,7 @@ const UserManagement = () => {
             <FlatList
                 data={users}
                 renderItem={renderUserItem}
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={(item) => item.getIdUsuario}
             />
         </View>
     );
@@ -122,6 +132,8 @@ const styles = StyleSheet.create({
     userName: {
         fontSize: 16,
         color: '#333',
+        width: '55%',
+        flexWrap: 'wrap'
     },
     manageButton: {
         backgroundColor: '#75A1DE',

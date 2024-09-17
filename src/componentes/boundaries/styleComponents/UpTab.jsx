@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         width: '100%',
         alignItems: 'center',
-        backgroundColor: '#454986',
+        backgroundColor: '#75A1DE',
         borderRadius: 5,
     },
     dropdownItemText: {

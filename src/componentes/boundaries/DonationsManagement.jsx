@@ -76,9 +76,9 @@ const DonationsManagement = ({ route }) => {
                                 <View key={index} style={styles.donacionesContainer}>
                                     <FontAwesome name="file-text" style={styles.icon} />
                                     <View style={styles.infoDonationContainer}>
-                                        <Text style={[styles.infoDonationText, styles.infoDescription]}>Proyecto al cual se donó: </Text>
-                                        <Text style={styles.infoDonationText}>Fecha de donación: {donaciones.getFechaDonacion}</Text>
-                                        <Text style={styles.infoDonationText}>Monto de donación: {donaciones.getMonto}$</Text>
+                                        <Text style={[styles.infoDonationText, styles.infoDescription]}>{donaciones.projectoName} </Text>
+                                        <Text style={styles.infoDonationText}>Fecha de donación: {donaciones.fecha_donacion}</Text>
+                                        <Text style={styles.infoDonationText}>Monto de donación: {donaciones.monto}$</Text>
                                     </View>
                                 </View>
                             ))}
@@ -149,10 +149,8 @@ const styles = StyleSheet.create({
 
         backgroundColor: '#ECF7FD',
 
-        borderRadius: normalize(30),
         borderWidth: 3,
         borderColor: '#0B3979',
-
         elevation: 5
     },
     

@@ -2,6 +2,7 @@ export default class Usuario{
     //A diferencia, acá no podemos asignar más de 1 constructor, pero se pueden definir valores default
     #idUsuario
     #admin
+    #activa
     #nombre
     #cedula
     #areaTrabajo
@@ -33,7 +34,8 @@ export default class Usuario{
         telefono = '',
         correo = '',
         password = '',
-        admin = false
+        admin = false,
+        activa = true
     ){
         this.#idUsuario = idUsuario,
         this.#admin = admin
@@ -43,7 +45,8 @@ export default class Usuario{
         this.#cantDineroBolsillo = cantDineroInicial,
         this.#telefono = telefono,
         this.#correo = correo,
-        this.#password = password
+        this.#password = password,
+        this.#activa = activa
     }
 
     //Getters
@@ -73,6 +76,9 @@ export default class Usuario{
     }
     get isAdmin(){
         return this.#admin
+    }
+    get isActiva(){
+        return this.#activa;
     }
 
 
@@ -121,15 +127,23 @@ export default class Usuario{
     }
     set setAdmin(value){
         /**
-         * setter estado de usuario en proyectos
-         * @param {string} value     - Valor de entrada que debe ser la nueva contraseña
+         * setter tipo de usuario según proyectos
+         * @param {boolean} value     - Valor de entrada para indicar si es admin o no
         */
          this.#admin = value;
-    } 
+    }
+    set setActiva(value){
+        /**
+         * setter estado de cuenta
+         * @param {boolean} value     - Valor de entrada para indicar si la cuenta está activa o no
+        */
+         this.#activa = value;
+    }
 
     showData(){
         const usuarioData = `
             Admin: ${this.isAdmin}
+            Cuenta activa: ${this.isActiva}
             Usuario ID: ${this.#idUsuario}
             Nombre Completo: ${this.#nombre}
             Cédula: ${this.getCedula}
