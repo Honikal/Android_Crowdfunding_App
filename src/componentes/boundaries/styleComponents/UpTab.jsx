@@ -45,12 +45,7 @@ export default UpTab = ({ usuarioActual, dropdownVisible, setDropdownVisible }) 
 
     const handleModificarUsuario = () => {
         setDropdownVisible(false);
-        navigation.navigate('Modificar Cuenta', { usuarioActual: usuarioActual });
-    }
-
-    const handleGestionarUsuario = () => {
-        setDropdownVisible(false);
-        navigation.navigate('Gestionar Usuario', { usuarioActual: usuarioActual });
+        navigation.navigate('Modificar Cuenta', { usuarioActual });
     }
 
     const handleGestionarUsuario = () => {
@@ -109,17 +104,13 @@ export default UpTab = ({ usuarioActual, dropdownVisible, setDropdownVisible }) 
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={handleMyProjects} style={styles.dropdownItem}>
-                        <Text style={styles.dropdownItemText}> Mis proyectos </Text>
-                    </TouchableOpacity>
-                     <TouchableOpacity onPress={handleGestionarUsuario} style={styles.dropdownItem}>
-                        <Text style={styles.dropdownItemText}> Gestionar Usuarios </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={handleConfigurations} style={styles.dropdownItem}>
-                        <Text style={styles.dropdownItemText}> Configuraciones </Text>
+                        <Text style={styles.dropdownItemText}>Mis Proyectos</Text>
                     </TouchableOpacity>
 
+                    
+
                     {/* Opciones solo visibles para el administrador */}
-                    {Boolean(usuarioActual.isAdmin) && (
+                    {usuarioActual.isAdmin && (
                         <>
                             <TouchableOpacity onPress={handleGestionarUsuario} style={styles.dropdownItem}>
                                 <Text style={styles.dropdownItemText}>Gestionar Usuarios</Text>
@@ -138,6 +129,7 @@ export default UpTab = ({ usuarioActual, dropdownVisible, setDropdownVisible }) 
                             </TouchableOpacity>
                         </>
                     )}
+                    
                     <TouchableOpacity onPress={handleLogOut} style={styles.dropdownItem}>
                         <Text style={styles.dropdownItemText}>Salir de sesión</Text>
                     </TouchableOpacity>
@@ -156,8 +148,6 @@ const normalize = (size) => {
 
 const styles = StyleSheet.create({
     upTab: {
-        //Orden del campo
-        height: normalize(90),
         height: normalize(90),
         flexDirection: 'row',
         justifyContent: 'space-between',
