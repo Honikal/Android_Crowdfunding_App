@@ -25,10 +25,7 @@ export default DownTabProyecto = ({ usuarioActual, paginaActual }) => {
     console.log("La página actual es: ", paginaActual);
 
     const navegarPaginaInicial = async() => {
-        if (paginaActual !== 'Pagina Inicial'){
-            navigation.navigate('Pagina Inicial', { usuarioActual: usuarioActual, });
-        }
-        
+        navigation.navigate('Pagina Inicial', { usuarioActual: usuarioActual, });               
     }
 
     const navegarBusqueda = async() => {
@@ -55,7 +52,8 @@ export default DownTabProyecto = ({ usuarioActual, paginaActual }) => {
                 <FontAwesome name="search" style={styles.icon} />
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.availableBoton, paginaActual === 'Crear Proyecto' && styles.disabledBoton]} onPress={navegarCrearProyecto}>
+            <TouchableOpacity style={[styles.availableBoton, paginaActual === 'Crear Proyecto' && styles.disabledBoton]} 
+            onPress={navegarCrearProyecto}>
                 <FontAwesome name="plus-square" style={styles.icon} />
             </TouchableOpacity>
         </View>

@@ -1,30 +1,28 @@
 import React, { useState, useEffect } from "react";
-import{
+import {
     View,
     Text,
     TouchableOpacity,  // Añadimos TouchableOpacity para hacer clic en los proyectos
     StyleSheet,
-    
     Image,
-    
     Dimensions,
     PixelRatio,
     TouchableWithoutFeedback
 } from 'react-native';
 
-//Importamos el tab superior de la pantalla
+// Importamos el tab superior de la pantalla
 import UpTab from "./styleComponents/UpTab";
 import DownTab from "./styleComponents/DownTab";
 import VerticalScroll from "./styleComponents/VerticalScroll";
 
-//Importamos el controlador
+// Importamos el controlador
 import InitialPage_Ctrl from "../controllers/InitialPageController";
 
-//Importamos el sistema de navegación
+// Importamos el sistema de navegación
 import { useNavigation, useIsFocused } from '@react-navigation/native';
-import { FlatList, ScrollView } from "react-native-gesture-handler";
+import { ScrollView } from "react-native-gesture-handler";
 
-const InitialPage = ( { route } ) => {
+const InitialPage = ({ route }) => {
     const { usuarioActual } = route.params;
 
     const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -77,7 +75,11 @@ const InitialPage = ( { route } ) => {
                 <View style={styles.container}>
                     <ScrollView>
                         {listaProyectos.map((proyecto, index) => (
-                            <View key={index} style={styles.proyectoContainer}>
+                            <TouchableOpacity 
+                                key={index} 
+                                style={styles.proyectoContainer}
+                                onPress={() => handleProjectPress(proyecto)} // Añadimos el evento onPress
+                            >
                                 <ScrollView horizontal={true} style={styles.mediaPreviewContainer} nestedScrollEnabled={true}>
                                     {proyecto.media && proyecto.media.length > 0 && proyecto.media.map((mediaItem, index) => (
                                         <Image
@@ -88,22 +90,6 @@ const InitialPage = ( { route } ) => {
                                     ))}
                                 </ScrollView>
 
-                                {/* 
-                                <FlatList
-                                    data={proyecto.media}
-                                    keyExtractor={(item, index) => index.toString()}
-                                    renderItem={({item}) => (
-                                        <Image
-                                            source={{ uri: item }}
-                                            style={styles.preview}
-                                        />
-                                    )}
-                                    horizontal={true}
-                                    showsHorizontalScrollIndicator={false}
-                                    nestedScrollEnabled={true}
-                                />
-                                */}
-                                
                                 <View style={styles.seccionProfile}>
                                     <View style={styles.profileIcon}>
                                         <Text style={styles.profileText}>{obtenerPrimeraLetra(proyecto.creadorNombre)}</Text>
@@ -121,7 +107,7 @@ const InitialPage = ( { route } ) => {
                                 <Text style={styles.descriptionProyect} selectable={true}>{proyecto.descripcion} </Text>
 
                                 <Text style={styles.categoriaButton}>{proyecto.categoria}</Text>
-                            </View>
+                            </TouchableOpacity>
                         ))}
                     </ScrollView>
                 </View>
@@ -135,7 +121,7 @@ const InitialPage = ( { route } ) => {
     );
 };
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 const scale = width / 375;
 
 const normalize = (size) => {
@@ -156,7 +142,8 @@ const styles = StyleSheet.create({
         padding: 10,
         borderColor: '#A8CEFF',
         borderWidth: 2,
-        backgroundColor: '#ECF7FD'
+        backgroundColor: '#ECF7FD',
+        marginBottom: 10,  // Añadimos margen para separar los proyectos
     },
     seccionProfile: {
         flexDirection: 'row'
@@ -196,7 +183,6 @@ const styles = StyleSheet.create({
     mediaPreviewContainer: {
         marginVertical: normalize(10),
         maxHeight: width * 0.6,
-
         width: '100%',
     },
     preview: {
@@ -204,7 +190,6 @@ const styles = StyleSheet.create({
         height: width * 0.6,
         borderRadius: normalize(10),
         marginTop: normalize(15),
-
         resizeMode: 'contain',
     },
     categoriaButton: {
@@ -218,7 +203,7 @@ const styles = StyleSheet.create({
         borderWidth: 3,
         borderRadius: 40,
         alignSelf: 'flex-start',
-        maxWidth: '50%'
+        maxWidth: '50%',
     },
 });
 
