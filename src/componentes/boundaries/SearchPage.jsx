@@ -93,11 +93,40 @@ const styles = StyleSheet.create({
     },
     projectItem: {
         width: '100%',
-        padding: 15,
-        backgroundColor: '#FFF',
-        borderRadius: 10,
-        marginBottom: 10,
-        alignItems: 'center',
+
+        marginVertical: 10,
+        paddingVertical: 2,
+        flexDirection: 'row',
+
+        borderWidth: 2,
+        borderRadius: 16,
+    },
+    categoryButton: {
+        marginHorizontal: 5,
+        paddingVertical: 2,
+        paddingHorizontal: 14,
+
+        justifyContent: 'center',
+
+        backgroundColor: '#ECF7FD',
+        color: '#0B3979',
+        textAlign: 'center',
+
+        borderColor: '#75A1DE',
+
+        borderRadius: 20,
+        borderWidth: 0,
+
+        elevation: 5,
+
+        // Shadow for iOS
+        shadowColor: '#000',
+        shadowOpacity: 0.3,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 4,
+    },
+    categoriaButtonSelected: {
+        backgroundColor: '#A8CEFF',
     },
     projectName: {
         fontSize: 18,
