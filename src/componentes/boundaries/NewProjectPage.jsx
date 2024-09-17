@@ -32,9 +32,15 @@ import { ScrollView } from "react-native-gesture-handler";
 // Tomando las dimensiones de la pantalla
 const { width } = Dimensions.get('window');
 
+//Sistema de navegación
+import { useNavigation } from '@react-navigation/native';
+
 const CreateProject = ( {route} ) => {
     //Recibimos el parámetro como tal
     const { usuarioActual } = route.params;
+
+    // Instanciamos la constante de navegación
+    const navigation = useNavigation();
 
     // Variables de estado para el formulario
     const [projectName, setProjectName] = useState("");
@@ -75,8 +81,6 @@ const CreateProject = ( {route} ) => {
             };
 
             setMedia((prevMedia) => [...prevMedia, newMedia]); // Guardamos la URI del archivo seleccionado
-            //null
-            //Value for uri cannot be cast from ReadableNativeArray to String
 
             console.log("Si se guarda la imagen como tal: ", newMedia);
             console.log("Datos actualizados en sistema: ", media)
@@ -119,6 +123,8 @@ const CreateProject = ( {route} ) => {
             proyectoActual.showData();
 
             Alert.alert("Proyecto Creado", "El proyecto ha sido creado exitosamente.");
+
+            navigation.navigate('Pagina Inicial', { usuarioActual: usuario });
         } catch (error) {
             console.error("Error durante creación del proyecto:", error.message);
             Alert.alert(error.message);

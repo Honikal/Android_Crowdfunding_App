@@ -56,7 +56,7 @@ export default class DonacionEntidad {
                 })
 
                 //Checamos que el usuario haya sido el encargado de realizar la donación
-                const donaciones_usuario = donaciones.filter(donat => donat.getIdDonador === idUsuario);
+                const donaciones_usuario = donaciones.filter(donat => donat.id_donador === idUsuario);
                 return donaciones_usuario
             } else {
                 return [];
@@ -85,7 +85,7 @@ export default class DonacionEntidad {
                 })
 
                 //Checamos que el usuario haya sido el encargado de realizar la donación
-                const donaciones_proyecto = donaciones.filter(donat => donat.getIdProyectoBeneficiado === idProyecto);
+                const donaciones_proyecto = donaciones.filter(donat => donat.id_proyecto_beneficiado === idProyecto);
                 return donaciones_proyecto
             } else {
                 return [];
@@ -148,9 +148,9 @@ export default class DonacionEntidad {
     createDonacionFromData ( donacionData ){
         //Extraemos la data de la base de datos como tal
         const { id_donacion, id_donador, id_proyecto_beneficiado, monto, info_donante,
-            fecha_donacion } = proyectoData;
+            fecha_donacion } = donacionData;
 
-        const donacion = new Donacion(id_donacion, id_donador, id_proyecto_beneficiado, monto, info_donante, fecha_donacion);
+        const donacion = new Donacion(id_donacion, id_donador, id_proyecto_beneficiado, info_donante, monto);
         return donacion;
     }
 

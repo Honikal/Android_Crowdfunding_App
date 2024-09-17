@@ -25,7 +25,9 @@ export default DownTabProyecto = ({ usuarioActual, paginaActual }) => {
     console.log("La página actual es: ", paginaActual);
 
     const navegarPaginaInicial = async() => {
-        navigation.navigate('Pagina Inicial', { usuarioActual: usuarioActual, });               
+        if (paginaActual !== 'Pagina Inicial'){
+            navigation.navigate('Pagina Inicial', { usuarioActual: usuarioActual, });               
+        }
     }
 
     const navegarBusqueda = async() => {

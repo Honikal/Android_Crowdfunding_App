@@ -18,12 +18,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.h0n1k4l.Android_Crowdfunding_App"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
+      "eas": {
+        "projectId": "a5111994-34fd-466b-b33f-1f683c7d6029"
+      }
     }
   }
 }

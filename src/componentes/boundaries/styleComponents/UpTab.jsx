@@ -23,6 +23,9 @@ import { useNavigation } from '@react-navigation/native';
 export default UpTab = ({ usuarioActual, dropdownVisible, setDropdownVisible }) => {
     const navigation = useNavigation();
 
+    console.log("Info del usuario: ");
+    usuarioActual.showData();
+
     const pressButtonUsuario = () => {
         setDropdownVisible(!dropdownVisible);
     }
@@ -60,7 +63,7 @@ export default UpTab = ({ usuarioActual, dropdownVisible, setDropdownVisible }) 
 
     const handleMonitorearDonaciones = () => {
         setDropdownVisible(false);
-        navigation.navigate('Monitorear Donaciones', { usuarioActual });
+        navigation.navigate('Monitorear Donaciones', { usuarioActual: usuarioActual });
     }
 
     const handleVerEstadisticas = () => {
