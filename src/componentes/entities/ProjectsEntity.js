@@ -1,7 +1,6 @@
 import { getDatabase, ref as dbRef, get, push, set, update } from 'firebase/database';
-import { getStorage, ref as storageRef, uploadBytes } from 'firebase/storage';
+import { getDownloadURL, getStorage, ref as storageRef, uploadBytes } from 'firebase/storage';
 import { app } from "../../../firebaseConfig.js";
-
 
 import Proyecto from "../models/Projects.js"
 
@@ -30,6 +29,38 @@ export default class ProyectoEntidad {
                         idProyecto: id
                     }
                 })
+                return proyectos;
+            } else {
+                return [];
+            }
+        } catch (error) {
+            console.error("Error desde la capa entidad extrayendo los proyectos del sistema: ", error);
+            throw error;
+        }
+    }
+
+    /**
+     * Función encargada de retornar todos los proyectos de la tabla, que estén conectados con el idUsuario
+     * @param {String} idUsuario
+     * @returns {Promise<Proyecto[]>}                    
+     */
+    async getProyectosByIdUsuario(idUsuario){
+        try {
+            const snapshot = await get(this.#dbRef);
+            if (snapshot.exists()){
+                const proyectosData = snapshot.val();
+                const proyectos = Object.keys(proyectosData).map(id => {
+                    return {
+                        ...proyectosData[id],
+                        idProyecto: id
+                    }
+                })
+
+                //Checamos que el usuario esté en la lista de colaboradores
+                const proyectos_usuario = proyectos.filter(proj => proj.id_creador === idUsuario);
+                return proyectos_usuario
+            } else {
+                return [];
             }
         } catch (error) {
             console.error("Error desde la capa entidad extrayendo los proyectos del sistema: ", error);
@@ -57,11 +88,10 @@ export default class ProyectoEntidad {
                 objetivo_financiero: proyecto.getObjetivoFinanciero,
                 fondos_recaudados: proyecto.getFondosRecaudados,
                 fecha_creacion: proyecto.getFechaCreacion,
-                fecha_limite: proyecto.getFechaLimite,
-                media: proyecto.getMedia
+                fecha_limite: proyecto.getFechaLimite
             });
 
-            return newProyectoRef;
+            return newProyectoRef.key;
         } catch (error) {
             console.error("Error desde la capa entidad intentando crear el proyecto: ", proyecto);
             throw error;
@@ -71,6 +101,9 @@ export default class ProyectoEntidad {
     async uploadMediaToStorage(idProyecto, media) {
         try {
             const storage = getStorage();
+            const mediaUrls = []; //Guardamos las URLS de archivos media
+
+            console.log("Data from idProyecto: ", idProyecto);
 
             for (const uri of media) {
                 //Creamos referencias únicas por cada archivo basado en proyecto ID y un nombre único
@@ -82,7 +115,17 @@ export default class ProyectoEntidad {
 
                 //Cargamos la imagen en el Storage de Firebase
                 await uploadBytes(storageR, blob);
+
+                //Tomamos los URL de descarga del archivo subido
+                const downloadURL = await getDownloadURL(storageR);
+                mediaUrls.push(downloadURL);
             }        
+
+            //Guardamos los archivos de media o las URL en nuestro Realtime Database
+            console.log("Data from idProyecto again before pushing to db: ", idProyecto);
+
+            const proyectoRef = dbRef(this.#db, `projects/${idProyecto}/media`);
+            await set(proyectoRef, mediaUrls); //Guardamos las url dentro de la base de datos de firebase
         } catch (error) {
             console.error("Error desde la capa entidad guardando las imágenes en storage: ", error);
             throw error;
@@ -108,6 +151,22 @@ export default class ProyectoEntidad {
         }
     }
 
+    /**
+     * Función encargada de aplicar formato de base de datos a proyecto clase
+     * @async
+     * @param {Object} proyectoData           - Objeto de usuario extraído del sistema
+     * @returns {Proyecto}                    - Retorna la clase usuario como tal
+     */
+    createProyectoFromData ( proyectoData ){
+        //Extraemos la data de la base de datos como tal
+        const { idProyecto, id_creador, nombre, descripcion, categoria, objetivo_financiero, fondos_recaudados,
+            fecha_creacion, fecha_limite, media } = proyectoData;
+
+        const proyecto = new Proyecto(idProyecto, id_creador, nombre, descripcion, categoria, objetivo_financiero,
+            fondos_recaudados, fecha_creacion, fecha_limite, media);
+
+        return proyecto;
+    }
 
 }
 

@@ -111,7 +111,7 @@ const CreateProject = ( {route} ) => {
             const mediaUris = media.map(mediaItem => mediaItem.uri);
             
             const registrar = new CreateProject_Ctrl(usuarioActual.getIdUsuario, projectName, description,
-                category, fundingGoal, formatDate(startDate), formatDate(endDate), mediaUris);
+                category, parseFloat(fundingGoal), formatDate(startDate), formatDate(endDate), mediaUris);
 
             const proyectoActual = await registrar.crearProyecto();
             
@@ -329,7 +329,8 @@ const styles = StyleSheet.create({
     },
     button: {
         width: '40%',
-        marginVertical: 15,
+        marginVertical: 5,
+        marginBottom: 100,
         padding: 10,
         alignItems: 'center',
         backgroundColor: '#75A1DE',

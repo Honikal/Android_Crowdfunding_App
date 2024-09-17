@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { Picker } from '@react-native-picker/picker';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -8,38 +7,44 @@ import {
     StyleSheet,
     Alert,
     Image,
-    Dimensions
+    Dimensions,
+    ScrollView,
 } from 'react-native';
 
-// Importamos componentes para subir imágenes o videos
-import * as ImagePicker from 'expo-image-picker';
-import DateTimePicker from '@react-native-community/datetimepicker'; // Importamos DateTimePicker
+//Importamos el controlador
+import ModifyProject_Ctrl from '../controllers/ModifyProjectController';
 
-// Importamos datos gráficos
+import { Picker } from '@react-native-picker/picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 import { FontAwesome } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 
-// Tomando las dimensiones de la pantalla
-const { width } = Dimensions.get('window');
+const EditProjectPage = ({ route, navigation }) => {
+    const { usuarioActual } = route.params;
+    const { proyectoActual } = route.params;
 
-// Pantalla de edición de proyecto
-const EditProject = ({ route }) => {
-    const { proyectoActual } = route.params;  // Recibimos el proyecto a editar como parámetro
+    console.log("Prueba dentro del edit de proyectos: ");
+    proyectoActual.showData();
 
-    // Variables de estado para el formulario, precargadas con los datos del proyecto actual
-    const [projectName, setProjectName] = useState(proyectoActual.nombre);
-    const [description, setDescription] = useState(proyectoActual.descripcion);
-    const [fundingGoal, setFundingGoal] = useState(proyectoActual.metaFinanciamiento);
-    const [category, setCategory] = useState(proyectoActual.categoria);
-    const [media, setMedia] = useState(proyectoActual.imagenVideo);  // Para guardar la imagen o video seleccionado
+    const parseDate = (dateString) => {
+        const [day, month, year] = dateString.split('/');
+        return new Date(`${year}-${month}-${day}`);
+    }
 
-    // Variables para la selección de fechas
-    const [startDate, setStartDate] = useState(new Date(proyectoActual.fechaInicio));
-    const [endDate, setEndDate] = useState(new Date(proyectoActual.fechaFin));
+    const [projectName, setProjectName] = useState(proyectoActual.getNombre);
+    const [description, setDescription] = useState(proyectoActual.getDescripcion);
+    const [fundingGoal, setFundingGoal] = useState(proyectoActual.getObjetivoFinanciero.toString());
+    const [category, setCategory] = useState(proyectoActual.getCategoria);
+    const [media, setMedia] = useState(proyectoActual.getMedia || []);
+
+    const [startDate, setStartDate] = useState( parseDate(proyectoActual.getFechaCreacion) );
+    const [endDate, setEndDate] = useState( parseDate(proyectoActual.getFechaLimite) );
+
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
-    // Función para manejar la selección de imágenes/videos
-    const pickMedia = async () => {
+    const handleMediaUpload = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
             Alert.alert('Permisos denegados', 'Necesitamos permisos para acceder a tus archivos.');
@@ -54,22 +59,61 @@ const EditProject = ({ route }) => {
         });
 
         if (!result.canceled) {
-            setMedia(result.uri); // Guardamos la URI del archivo seleccionado
+            const newMedia = {
+                uri: result.assets[0].uri,
+                type: result.assets[0].type === "image" ? "image" : "video",
+            };
+
+            setMedia([...media, newMedia]);
         }
     };
 
-    // Función para manejar el envío del formulario (guardar cambios)
-    const handleSubmit = () => {
-        if (!projectName.trim() || !description.trim() || !fundingGoal.trim() || category === "Seleccionar Categoría") {
-            Alert.alert('Campos obligatorios', 'Por favor complete todos los campos.');
+    const handleUpdateProject = async () => {
+        // Aquí pones la lógica para actualizar el proyecto en la base de datos
+        if (!projectName.trim() || !description.trim() || !fundingGoal.trim() 
+        || category === "Seleccionar Categoría"){
+            Alert.alert('Campos obligatorios', 'Por favor complete todos los campos');
             return;
         }
 
-        // Aquí puedes agregar la lógica para guardar el proyecto editado en la base de datos
-        Alert.alert("Proyecto Editado", "El proyecto ha sido editado exitosamente.");
+        try {
+            const modificarProyecto = new ModifyProject_Ctrl(
+                proyectoActual,
+                projectName,
+                description,
+                fundingGoal,
+                category,
+                formatDate(startDate),
+                formatDate(endDate),
+                media
+            );
+
+            const proyectoModificado = modificarProyecto.modifyProject();
+
+            if (proyectoModificado){
+                Alert.alert('Proyecto Actualizado', 'Los cambios se han guardado exitosamente.');
+                navigation.goBack();
+            }else{
+                console.log("No se efectuaron los cambios");
+            }
+        } catch (error) {
+            console.error('Error actualizando proyecto:', error);
+            Alert.alert('Error', 'Hubo un problema al actualizar el proyecto.');
+        }
     };
 
-    // Funciones para manejar el DatePicker
+    const formatDate = (rawDate) => {
+        /*Mediante ésta función, actualizamos los datos o información de las fechas agregando un formato
+        específico, en éste caso, usaremos formato   dd/mm/aaaa */
+        let date = new Date(rawDate);
+
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        let day = date.getDate();
+
+        return `${day}/${month}/${year}`;
+    }
+
     const onStartDateChange = (event, selectedDate) => {
         setShowStartDatePicker(false);
         if (selectedDate) {
@@ -84,119 +128,128 @@ const EditProject = ({ route }) => {
         }
     };
 
+    console.log("Datos en media: ", media);
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Editar Proyecto</Text>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={styles.container}>
+                <Text style={styles.title}>Editar Proyecto</Text>
 
-            <View style={styles.inputContainer}>
-                <FontAwesome name="pencil" style={styles.icon} />
-                <TextInput
-                    placeholder="Nombre del Proyecto"
-                    placeholderTextColor={'#D9D5D5'}
-                    style={styles.input}
-                    value={projectName}
-                    onChangeText={setProjectName}
-                    maxLength={60}
-                />
-                <Text style={styles.characterCount}>{projectName.length}/60</Text>
+                <View style={styles.inputContainer}>
+                    <FontAwesome name="pencil" style={styles.icon} />
+                    <TextInput
+                        placeholder="Nombre del Proyecto"
+                        style={styles.input}
+                        value={projectName}
+                        onChangeText={setProjectName}
+                    />
+                </View>
+
+                <View style={styles.inputContainer}>
+                    <FontAwesome name="align-left" style={styles.icon} />
+                    <TextInput
+                        placeholder="Descripción"
+                        style={[styles.input, { height: 100, textAlignVertical: 'top' }]}
+                        value={description}
+                        onChangeText={setDescription}
+                        multiline
+                    />
+                </View>
+
+                {/* Meta de Financiamiento */}
+                <View style={styles.inputContainer}>
+                    <FontAwesome name="dollar" style={styles.icon} />
+                    <TextInput
+                        placeholder="Meta de Financiamiento"
+                        style={styles.input}
+                        value={fundingGoal}
+                        onChangeText={setFundingGoal}
+                        keyboardType="numeric"
+                    />
+                </View>
+
+                {/* Selector de Categoría */}
+                <View style={styles.inputContainer}>
+                    <FontAwesome name="list" style={styles.icon} />
+                    <Picker
+                        selectedValue={category}
+                        style={styles.picker}
+                        onValueChange={(itemValue) => setCategory(itemValue)}
+                    >
+                        <Picker.Item label="Tecnología" value="Tecnología" />
+                        <Picker.Item label="Cultura" value="Cultura" />
+                        <Picker.Item label="Educación" value="Educación" />
+                    </Picker>
+                </View>
+
+                {/* Fecha de Inicio */}
+                <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={styles.inputContainer}>
+                    <FontAwesome name="calendar" style={styles.icon} />
+                    <Text style={styles.dateText}>
+                        {`Fecha de Inicio: ${startDate.toLocaleDateString()}`}
+                    </Text>
+                </TouchableOpacity>
+
+                {/* Fecha de Fin */}
+                <TouchableOpacity onPress={() => setShowEndDatePicker(true)} style={styles.inputContainer}>
+                    <FontAwesome name="calendar" style={styles.icon} />
+                    <Text style={styles.dateText}>
+                        {`Fecha de Fin: ${endDate.toLocaleDateString()}`}
+                    </Text>
+                </TouchableOpacity>
+
+                {showStartDatePicker && (
+                    <DateTimePicker
+                        value={startDate}
+                        mode="date"
+                        display="default"
+                        onChange={onStartDateChange}
+                    />
+                )}
+
+                {showEndDatePicker && (
+                    <DateTimePicker
+                        value={endDate}
+                        mode="date"
+                        display="default"
+                        onChange={onEndDateChange}
+                    />
+                )}
+
+                {/* Manejo de imágenes */}
+                <TouchableOpacity onPress={handleMediaUpload} style={styles.mediaButton}>
+                    <Text style={styles.mediaButtonText}>
+                        {media.length > 0 ? 'Cambiar Imagen o Video' : 'Subir Imagen o Video'}
+                    </Text>
+                </TouchableOpacity>
+
+                <ScrollView horizontal={true} style={styles.mediaPreviewContainer}>
+                    {media.length > 0 && media.map((mediaItem, index) => (
+                        <Image
+                            key={index}
+                            source={{ uri: mediaItem }}
+                            style={styles.preview}
+                        />
+                    ))}
+                </ScrollView>
+
+                <TouchableOpacity onPress={handleUpdateProject} style={styles.button}>
+                    <Text style={styles.buttonText}>Actualizar Proyecto</Text>
+                </TouchableOpacity>
             </View>
-
-            <View style={styles.inputContainer}>
-                <FontAwesome name="align-left" style={styles.icon} />
-                <TextInput
-                    placeholder="Descripción del Proyecto"
-                    placeholderTextColor={'#D9D5D5'}
-                    style={[styles.input, { height: 100, textAlignVertical: 'top' }]}
-                    value={description}
-                    onChangeText={setDescription}
-                    multiline
-                    maxLength={135}
-                />
-                <Text style={styles.characterCount}>{description.length}/135</Text>
-            </View>
-
-            {/* Selector de Categoría */}
-            <View style={styles.inputContainer}>
-                <FontAwesome name="list" style={styles.icon} />
-                <Picker
-                    selectedValue={category}
-                    style={styles.picker}
-                    onValueChange={(itemValue) => setCategory(itemValue)}
-                >
-                    <Picker.Item label="Seleccionar Categoría" value="Seleccionar Categoría" />
-                    <Picker.Item label="Tecnología" value="Tecnología" />
-                    <Picker.Item label="Cultura" value="Cultura" />
-                    <Picker.Item label="Educación" value="Educación" />
-                </Picker>
-            </View>
-
-            <View style={styles.inputContainer}>
-                <FontAwesome name="dollar" style={styles.icon} />
-                <TextInput
-                    placeholder="Meta de Financiamiento"
-                    placeholderTextColor={'#D9D5D5'}
-                    style={styles.input}
-                    value={fundingGoal}
-                    onChangeText={setFundingGoal}
-                    keyboardType="numeric"
-                />
-            </View>
-
-            {/* Fecha de Inicio */}
-            <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={styles.inputContainer}>
-                <FontAwesome name="calendar" style={styles.icon} />
-                <Text style={styles.dateText}>
-                    {`Fecha de Inicio: ${startDate.toLocaleDateString()}`}
-                </Text>
-            </TouchableOpacity>
-
-            {/* Fecha de Fin */}
-            <TouchableOpacity onPress={() => setShowEndDatePicker(true)} style={styles.inputContainer}>
-                <FontAwesome name="calendar" style={styles.icon} />
-                <Text style={styles.dateText}>
-                    {`Fecha de Fin: ${endDate.toLocaleDateString()}`}
-                </Text>
-            </TouchableOpacity>
-
-            {showStartDatePicker && (
-                <DateTimePicker
-                    value={startDate}
-                    mode="date"
-                    display="default"
-                    onChange={onStartDateChange}
-                />
-            )}
-
-            {showEndDatePicker && (
-                <DateTimePicker
-                    value={endDate}
-                    mode="date"
-                    display="default"
-                    onChange={onEndDateChange}
-                />
-            )}
-
-            <TouchableOpacity style={styles.mediaButton} onPress={pickMedia}>
-                <Text style={styles.mediaButtonText}>
-                    {media ? 'Cambiar Imagen o Video' : 'Subir Imagen o Video'}
-                </Text>
-            </TouchableOpacity>
-
-            {media && (
-                <Image source={{ uri: media }} style={styles.preview} />
-            )}
-
-            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                <Text style={styles.buttonText}>Guardar Cambios</Text>
-            </TouchableOpacity>
-        </View>
+        </ScrollView>
     );
 };
 
+// Estilos para la pantalla de edición de proyectos
 const styles = StyleSheet.create({
+    scrollContainer: {
+        flexGrow: 1,
+        alignItems: 'center',
+        paddingBottom: 40, // Para evitar que el contenido quede demasiado pegado al fondo
+    },
     container: {
         width: '100%',
-        flexGrow: 1,
         backgroundColor: '#A8CEFF',
         alignItems: 'center',
         paddingTop: 40,
@@ -223,14 +276,14 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         flex: 1,
     },
-    picker: {
-        flex: 1,
-        color: '#000',
-    },
     icon: {
         fontSize: 24,
         padding: 8,
         color: '#c4c4bc',
+    },
+    picker: {
+        flex: 1,
+        color: '#000',
     },
     dateText: {
         color: '#000',
@@ -247,15 +300,22 @@ const styles = StyleSheet.create({
         color: '#FFF',
         fontSize: 16,
     },
+    mediaPreviewContainer: {
+        marginVertical: 10,
+        maxHeight: Dimensions.get('window').width * 0.5,
+        width: '80%',
+    },
     preview: {
-        width: width * 0.8,
-        height: width * 0.5,
+        width: '100%',
+        height: Dimensions.get('window').width * 0.5,
         borderRadius: 10,
-        marginTop: 15,
+
+        resizeMode: 'contain',
     },
     button: {
         width: '40%',
-        marginVertical: 15,
+        marginVertical: 5,
+        marginBottom: 100,
         padding: 10,
         alignItems: 'center',
         backgroundColor: '#75A1DE',
@@ -265,13 +325,7 @@ const styles = StyleSheet.create({
         color: '#FEFEFE',
         fontSize: 16,
     },
-    characterCount: {
-        color: '#D9D5D5',
-        fontSize: 12,
-        position: 'absolute',
-        right: 15,
-        bottom: 5,
-    }
+    
 });
 
-export default EditProject;
+export default EditProjectPage;

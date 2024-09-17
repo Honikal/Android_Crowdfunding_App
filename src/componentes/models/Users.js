@@ -112,12 +112,12 @@ export default class Usuario{
         */
         this.#areaTrabajo = value
     }
-    get getCantDineroBolsillo(){
+    set setCantDineroBolsillo(value){
         /**
          * setter cantidad de dinero en el bolsillo
          * @param {float} value     - Valor de entrada que debe ser un aproximado al dinero inicial que tiene un usuario en el bolsillo
         */
-        return this.#cantDineroBolsillo;
+        this.#cantDineroBolsillo = value;
     }
     set setAdmin(value){
         /**
