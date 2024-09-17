@@ -98,7 +98,10 @@ export default function App() {
           name='Donar'
           component={Donate}
           options={{ headerShown: false }}
-          initialParams={{ proyectoActual: null }}
+          initialParams={{
+            usuarioActual: null,
+            proyectoActual: null,
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>

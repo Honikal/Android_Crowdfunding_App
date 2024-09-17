@@ -33,6 +33,7 @@ export default UpTab = ({ usuarioActual, dropdownVisible, setDropdownVisible }) 
     console.log("Mostramos la variable del dropdown menu: ", dropdownVisible);
     console.log("Mostramos la función encargada de setear el tab: ", setDropdownVisible);
 
+    
     //Insertamos la constante de navegación
     const navigation = useNavigation();
 

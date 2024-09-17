@@ -68,6 +68,34 @@ export default class ProyectoEntidad {
         }
     }
 
+    /**
+     * Función encargada de retornar la información de un proyecto específico como tal
+     * @async
+     * @param {String} idProyecto    - Id del presunto proyecto a buscar 
+     * @returns {Promise<Usuario>}   - Retorna true si encuentra un usuario con ese correo, sino, no retorna false
+     */
+    async getProyectoByID(idProyecto) {
+        //Buscamos directamente en el punto de referencia
+        try {
+            const proyectoRef = dbRef(this.#db, `projects/${idProyecto}`);
+
+            //Buscamos la posibilidad de dicha ruta
+            const snapshot = await get(proyectoRef);
+
+            if (snapshot.exists()){
+                proyecto = snapshot.val();
+                console.log("proyecto encontrado y extraído al sistema");
+                return proyecto;
+            } else {
+                console.error("Error al encontrar al usuario");
+                throw new Error(`No existe el usuario en el sistema, problemas internos desconocidos`);
+            }
+        } catch (error) {
+            console.error("Error desde la capa entidad encontrando el proyecto a modificar: ", error);
+            throw error;
+        }
+    }
+
     //ADD Proyecto
     /**
      * Se encarga de recibir los datos del Objeto proyecto y crear uno en el sistema, con base a éstos

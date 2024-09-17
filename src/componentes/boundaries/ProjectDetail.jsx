@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     View,
     Text,
@@ -9,17 +9,34 @@ import {
     Dimensions
 } from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 
 const ProjectDetail = ({ route }) => {
+    const { usuarioActual } = route.params;
     const { proyectoActual } = route.params;
+
     const navigation = useNavigation();
 
+    // Checar que se estén cargando los datos en el sistema en la página
+    const isFocused = useIsFocused();
+
+    useEffect(() => {
+        if (isFocused) {
+        }
+    }, [isFocused]);
+
     const handleDonate = () => {
-        navigation.navigate('Donar', { proyecto: proyectoActual });
+        navigation.navigate('Donar',
+            {
+                usuarioActual: usuarioActual,
+                proyectoActual: proyectoActual 
+            }
+        );
     };
+
+
 
     return (
         <ScrollView style={styles.container}>
