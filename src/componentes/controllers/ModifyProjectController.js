@@ -45,7 +45,7 @@ export default class ModifyProject_Ctrl {
     async modifyProject() {
         try {
             const proyectoEntidad = new ProyectoEntidad();
-            proyectoEntidad.editProyecto(
+            await proyectoEntidad.editProyecto(
                 this.#proyecto.getIdProyecto,
                 {
                     nombre: this.#nombreNuevo,

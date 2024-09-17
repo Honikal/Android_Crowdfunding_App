@@ -7,37 +7,60 @@ import {
     StyleSheet,
     Alert
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation,  } from '@react-navigation/native';
+
+import Donate_Ctrl from '../controllers/DonateController';
 
 const Donate = ({ route }) => {
-    const { proyecto, usuarioActual } = route.params; // Recibe el proyecto y el usuario actual
+    const { usuarioActual } = route.params; // Recibe el proyecto y el usuario actual
+    const { proyectoActual } = route.params;
+
     const [monto, setMonto] = useState('');
+
+    // Instanciamos la constante de navegación
     const navigation = useNavigation();
 
-    const handleDonation = () => {
+    const handleDonation = async() => {
         const montoNumerico = parseFloat(monto);
         if (isNaN(montoNumerico) || montoNumerico <= 0) {
             Alert.alert("Error", "Por favor, ingrese un monto válido.");
             return;
         }
 
-        if (montoNumerico > 99000000) {
+        if (montoNumerico > usuarioActual.getCantDineroBolsillo) {
             Alert.alert("Fondos insuficientes", "No tiene suficientes fondos en su cartera para realizar esta donación.");
         } else {
             // Resta el monto de la cartera del usuario
-            99000000 - montoNumerico;
-            Alert.alert("Éxito", `Donaste $${montoNumerico} al proyecto ${proyecto.nombre}.`);
-            // Puedes agregar lógica adicional aquí, como actualizar los fondos del proyecto
+            const crearDonacion = new Donate_Ctrl(
+                usuarioActual, 
+                proyectoActual.idProyecto,
+                montoNumerico
+            );
 
-            // Después de la donación, navega de regreso a la pantalla del proyecto o a donde desees
-            navigation.navigate('ProjectDetail', { proyectoActual: proyecto });
+            try {   
+                const usuarioActualActualizado = await crearDonacion.crearDonacion();
+
+                Alert.alert("Éxito", `Donaste $${montoNumerico} al proyecto ${proyectoActual.nombre}.`);
+
+                // Después de la donación, navega de regreso a la pantalla del proyecto o a donde desees
+                navigation.navigate('Detalle Proyecto',
+                    {
+                        usuarioActual: usuarioActualActualizado,
+                        proyectoActual: proyectoActual
+                    }
+                );
+            } catch (error) {
+                console.error("Error durante la donación:", error.message);
+                Alert.alert(error.message);
+            }
+            
         }
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Donar al proyecto: {proyecto.nombre}</Text>
-            <Text style={styles.projectDescription}>{proyecto.descripcion}</Text>
+            <Text style={styles.title}>Donar al proyecto: {proyectoActual.nombre}</Text>
+            <Text style={styles.projectDescription}>{proyectoActual.descripcion}</Text>
 
             <View style={styles.formContainer}>
                 <Text style={styles.label}>Monto a Donar (USD):</Text>
@@ -48,7 +71,7 @@ const Donate = ({ route }) => {
                     placeholder="Ingrese el monto"
                     keyboardType="numeric"
                 />
-                <Text style={styles.walletText}>Fondos disponibles: ${98000000}</Text>
+                <Text style={styles.walletText}>Fondos disponibles: ${usuarioActual.getCantDineroBolsillo}</Text>
             </View>
 
             <TouchableOpacity style={styles.donateButton} onPress={handleDonation}>

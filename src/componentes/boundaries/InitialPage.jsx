@@ -61,7 +61,12 @@ const InitialPage = ({ route }) => {
 
     const handleProjectPress = (proyecto) => {
         // Navegamos a la pantalla de detalles del proyecto, pasando los detalles como parámetros
-        navigation.navigate('Detalle Proyecto', { proyectoActual: proyecto });
+        navigation.navigate('Detalle Proyecto', 
+            {
+                usuarioActual: usuarioActual,
+                proyectoActual: proyecto 
+            }
+        );
     };
 
     return (

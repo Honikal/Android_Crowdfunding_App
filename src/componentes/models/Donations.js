@@ -6,6 +6,18 @@ export default class Donacion{
     #fecha_donacion
     #monto
 
+    formatDate = (rawDate) => {
+        /*Mediante ésta función, actualizamos los datos o información de las fechas agregando un formato
+        específico, en éste caso, usaremos formato   dd/mm/aaaa */
+        let date = new Date(rawDate);
+
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        let day = date.getDate();
+
+        return `${day}/${month}/${year}`;
+    }
+
     /**
      * Constructor de clase Proyectos
      * @param {string} idDonacion            - ID única generada al ser guardado en RealTime Database de firebase
@@ -15,7 +27,7 @@ export default class Donacion{
      * @param {string} infoDonante           - Información de contacto del donante
      * @param {float}  monto                 - Cantidad de dinero en dólares que se piensa donar al proyecto
     */
-     constructor (
+    constructor (
         idDonacion = '',
         idDonador = '',
         idProyectoBeneficiado = '',
@@ -27,7 +39,7 @@ export default class Donacion{
         this.#idProyectoBeneficiado = idProyectoBeneficiado,
         this.#infoDonante = infoDonante,
         this.#monto = monto,
-        this.#fecha_donacion = formatDate(new Date());
+        this.#fecha_donacion = this.formatDate(new Date());
     }
 
     //Getters
@@ -89,25 +101,15 @@ export default class Donacion{
 
     showData(){
         const proyectoData = `
-            Donación ID: ${this.#idProyecto}
-            Creador ID: ${this.#idCreador}
-            Proyecto ID: ${this.#idCreador}
+            Donación ID: ${this.#idDonacion}
+            Creador de la donación ID: ${this.#idDonador}
+            Proyecto ID: ${this.#idProyectoBeneficiado}
             Info del donante: ${this.#infoDonante}
             Monto de donación: ${this.#monto}
         `;
         console.log(proyectoData);
     }
 
-    formatDate = (rawDate) => {
-        /*Mediante ésta función, actualizamos los datos o información de las fechas agregando un formato
-        específico, en éste caso, usaremos formato   dd/mm/aaaa */
-        let date = new Date(rawDate);
-
-        let year = date.getFullYear();
-        let month = date.getMonth() + 1;
-        let day = date.getDate();
-
-        return `${day}/${month}/${year}`;
-    }
+    
 
 }

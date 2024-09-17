@@ -85,7 +85,7 @@ export default class ModifyAccount_Ctrl{
 
             //// Actualización de base de datos ////
             const usuarioEntidad = new UsuarioEntidad();
-            usuarioEntidad.editUsuario(
+            await usuarioEntidad.editUsuario(
                 this.#usuario.getIdUsuario,
                 {
                     correo: this.#correoNuevo,

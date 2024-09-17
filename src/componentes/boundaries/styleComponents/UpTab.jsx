@@ -27,12 +27,7 @@ import { useNavigation } from '@react-navigation/native';
 export default UpTab = ({ usuarioActual, dropdownVisible, setDropdownVisible }) => {
     //Como parámetros estamos recibiendo el usuario, el dropdown y el setter
 
-    console.log("Usuario actual pasado en el up tab");
-    usuarioActual.showData();
-
-    console.log("Mostramos la variable del dropdown menu: ", dropdownVisible);
-    console.log("Mostramos la función encargada de setear el tab: ", setDropdownVisible);
-
+    
     //Insertamos la constante de navegación
     const navigation = useNavigation();
 
