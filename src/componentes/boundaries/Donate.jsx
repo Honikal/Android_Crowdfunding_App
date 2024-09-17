@@ -10,16 +10,6 @@ import {
 import { useNavigation } from '@react-navigation/native';
 
 const Donate = ({ route }) => {
-    const { proyecto, usuarioActual } = route.params; // Recibe el proyecto y el usuario actual
-    const [monto, setMonto] = useState('');
-    const navigation = useNavigation();
-
-    const handleDonation = () => {
-import { useNavigation,  } from '@react-navigation/native';
-
-import Donate_Ctrl from '../controllers/DonateController';
-
-const Donate = ({ route }) => {
     const { usuarioActual } = route.params; // Recibe el proyecto y el usuario actual
     const { proyectoActual } = route.params;
 
@@ -99,7 +89,9 @@ const Donate = ({ route }) => {
                 <Text style={styles.donateButtonText}>Donar</Text>
             </TouchableOpacity>
         </View>
-    );
+
+        );
+    }
 };
 
 const styles = StyleSheet.create({
