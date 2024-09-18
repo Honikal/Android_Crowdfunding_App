@@ -1,10 +1,17 @@
 import UsuarioEntidad from "../entities/UserEntity";
 
 export default class UserManagement_Ctrl{
+    #usuario
     /**
      * Constructor de clase UserManagement_Ctrl
+     * @param {Usuario} usuario
     */
-    constructor(){}
+    constructor(
+        usuario = null
+    )
+    {
+        this.#usuario = usuario
+    }
 
     async getUsuariosPrograma(){
         const usuariosRetornar = []
@@ -23,6 +30,16 @@ export default class UserManagement_Ctrl{
             console.error("Error capa controlador extrayendo usuarios del sistema: ", error);
             throw error;
         }
+    };
+
+    async updateStateOfAccount(){
+        const usuarioEntidad = new UsuarioEntidad();
+        await usuarioEntidad.editUsuario(this.#usuario.getIdUsuario,
+            {
+                activa: this.#usuario.isActiva
+            }
+        );
+        console.log("Cuenta de usuario restringida");
     }
 }
 

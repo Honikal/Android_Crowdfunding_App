@@ -63,11 +63,11 @@ export default class IniciarSesion_Ctrl{
 
     createUsuarioFromData ( usuarioData ){
         //Extraemos la data de la base de datos como tal
-        const { idUsuario, admin, nombre_completo, cedula, area_trabajo, cantidad_bolsillo, telefono, correo, password} =
+        const { idUsuario, admin, activa, nombre_completo, cedula, area_trabajo, cantidad_bolsillo, telefono, correo, password} =
         usuarioData;
 
         const usuario = new Usuario(idUsuario, nombre_completo, cedula, area_trabajo,
-            cantidad_bolsillo, telefono, correo, password, admin);
+            cantidad_bolsillo, telefono, correo, password, admin, activa);
         return usuario;
     }
 

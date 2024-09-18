@@ -102,8 +102,6 @@ export default class InitialPage_Ctrl{
             const proyectoEntidad = new ProyectoEntidad();
             listaProyectos = await proyectoEntidad.getProyectos();
 
-            console.log("Lista proyectos size: ", listaProyectos.length)
-
             for (const proyectData of listaProyectos) {
                 const proyecto = await this.createProyectoFromData(proyectData);
                 proyectosRetornar.push(proyecto);

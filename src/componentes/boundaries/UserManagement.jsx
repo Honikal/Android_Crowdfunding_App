@@ -16,6 +16,7 @@ import UserManagement_Ctrl from "../controllers/UserManagementController";
 const UserManagement = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [reloadTrigger, setReloadTrigger] = useState(false); //Trigger para recargar la página
 
     // useEffect para ejecutar fetchUsers al cargar la pantalla
     useEffect(() => {
@@ -36,16 +37,22 @@ const UserManagement = () => {
         };
 
         fetchUsers();
-    }, []);
+    }, [reloadTrigger]);
 
     // Función para cambiar el estado activo de un usuario
     const toggleUserActive = async (id, currentStatus) => {
         try {
             const updatedUsers = users.map(user => {
+                user.showData();
+
                 if (user.getIdUsuario === id){
                     //Llamamos al método de ser activa en el objeto de usuario
-                    user.setActiva(!user.isActiva);
+                    console.log("Si entramos acá de forma correcta");
+                    user.setActiva = !currentStatus;
+                    //Cambiamos los datos
+                    console.log("Se cambia el estado del usuario");
                 }
+                return user; //Retornamos el usuario una vez data ha sido modificada
             });
             //Actualizamos el estado como tal
             setUsers(updatedUsers);
@@ -54,12 +61,40 @@ const UserManagement = () => {
         }
     };
 
-    // Función para gestionar el perfil de un usuario
-    const manageUserProfile = (user) => {
-        console.log("Datos actualizados: ", user);
+    const desactivacionCuenta = async(user, mensaje) => {
+        const controlador = new UserManagement_Ctrl(user);
+        try {
+            await controlador.updateStateOfAccount();
+            console.log("Se ha desactivado el uso de cuenta del usuario: ", user.getNombre);
+            Alert.alert("Cambios registrados", `Se ha ${mensaje} la cuenta del usuario: ${user.getNombre}`);
 
-        Alert.alert("Gestión de Perfil", `Gestionar el perfil de ${user.name}`);
-        // Lógica para editar perfil
+            //Ejecutamos el trigger
+            setReloadTrigger(!reloadTrigger);
+        } catch (error) {
+            console.error("Error durante la lógica: ", error.message);
+            Alert.alert(error.message);
+        }
+    }
+
+    // Función para gestionar el perfil de un usuario
+    const manageUserProfile = async(user) => {
+        let mensaje = user.isActiva ? "activar" : "desactivar";
+        let mensaje2 = user.isActiva ? "activado" : "desactivado"
+
+        Alert.alert('Confirmacion',
+                    `¿Estás seguro de que deseas ${mensaje} la cuenta de ${user.getNombre}?`,
+                    [
+                        {
+                            text: "Cancelar",
+                            onPress: () => console.log("Operación cancelada"),
+                            style: "cancel"
+                        },
+                        {
+                            text: `Sí, ${mensaje} cuenta`,
+                            onPress: () => desactivacionCuenta(user, mensaje2)
+                        },
+                    ], {cancelable: true}
+                    );
     };
 
     // Renderizamos cada usuario en la lista
@@ -96,6 +131,7 @@ const UserManagement = () => {
                 data={users}
                 renderItem={renderUserItem}
                 keyExtractor={(item) => item.getIdUsuario}
+                scrollEnabled={true}
             />
         </View>
     );
@@ -145,6 +181,7 @@ const styles = StyleSheet.create({
         color: '#FFF',
         fontSize: 14,
     },
+
     loadingContainer: {
         flex: 1,
         justifyContent: 'center',

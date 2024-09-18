@@ -10,13 +10,16 @@ import {
     TouchableWithoutFeedback
 } from 'react-native';
 
+// Importar datos gráficos
+import { FontAwesome } from '@expo/vector-icons';
+
 // Importamos el tab superior de la pantalla
 import UpTab from "./styleComponents/UpTab";
 import DownTab from "./styleComponents/DownTab";
-import VerticalScroll from "./styleComponents/VerticalScroll";
 
 // Importamos el controlador
 import InitialPage_Ctrl from "../controllers/InitialPageController";
+import Login_Ctrl from "../controllers/LoginController";
 
 // Importamos el sistema de navegación
 import { useNavigation, useIsFocused } from '@react-navigation/native';
@@ -69,6 +72,39 @@ const InitialPage = ({ route }) => {
             }
         );
     };
+
+    // Opciones del menú de usuario
+    const handleLogOut = async () => {
+        const controlador = new Login_Ctrl();
+        try {
+            await controlador.logOut();
+            setDropdownVisible(false);
+            navigation.navigate('Login');
+        } catch (error) {
+            console.error("Error en la VIEW: ", error.message);
+        }
+    }
+
+    //Renderizar en caso que la cuenta esté desactivada
+    if (!usuarioActual.isActiva){
+        console.log("Usuario actual inactivo");
+        return (
+            <View style={styles.disabledContainer}>
+                <View style={styles.disabledMessageContainer}>
+                    <FontAwesome name="warning" style={styles.icon}/>
+                    <Text style={styles.titleDisabledMessage}>
+                        Unas disculpas
+                    </Text>
+                    <Text style={styles.disabledMessage}>
+                        Tu cuenta ha sido suspendida. Por favor comunicarse con el equipo de soporte para asistencia
+                    </Text>
+                    <TouchableOpacity style={styles.buttonExit} onPress={handleLogOut}>
+                        <Text style={styles.buttonExitText}>Cerrar sesion</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        )
+    }
 
     return (
         <TouchableWithoutFeedback onPress={handleOutsidePress}>
@@ -135,6 +171,7 @@ const normalize = (size) => {
 };
 
 const styles = StyleSheet.create({
+    //Cuenta activa
     container: {
         width: '100%',
         height: '80%',
@@ -210,6 +247,64 @@ const styles = StyleSheet.create({
         borderRadius: 40,
         alignSelf: 'flex-start',
         maxWidth: '50%',
+    },
+
+    //Cuenta inactiva
+    disabledContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+
+        backgroundColor: '#A8CEFF',
+    },
+    disabledMessageContainer: {
+        backgroundColor: '#ECF7FD',
+
+        borderWidth: 4,
+        borderRadius: 12,
+        borderColor: '#d62b45',
+
+        alignItems: 'center',
+
+        elevation: 10,
+    },
+    titleDisabledMessage: {
+        margin: 10,
+
+        fontSize: 26,
+        fontWeight: 'bold',
+        color: '#0B3979',
+
+        textAlign: 'center',
+    },
+    disabledMessage: {
+        color: '#0B3979',
+        fontSize: 18,
+        textAlign: 'center',
+        margin: 20
+    },
+    icon: {
+        marginTop: 8,
+        padding: 8,
+
+        fontSize: 32,
+        color: '#d62b45',
+        textAlign: 'center',
+    },
+    buttonExit: {
+        width: '50%',
+        marginVertical: 15,
+        padding: 10,
+        paddingHorizontal: 20,
+        alignItems: 'center',
+        backgroundColor: '#75A1DE',
+        color: '#FFF',
+        fontSize: 6,
+        borderRadius: 20,
+    },
+    buttonExitText: {
+        color: '#FEFEFE',
+        fontSize: 20,
     },
 });
 

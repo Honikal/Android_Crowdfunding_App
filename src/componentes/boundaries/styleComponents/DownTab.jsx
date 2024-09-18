@@ -19,9 +19,6 @@ export default DownTabProyecto = ({ usuarioActual, paginaActual }) => {
     //Insertamos la constante de navegación
     const navigation = useNavigation();
 
-    console.log("Usuario actual pasado en el down tab");
-    usuarioActual.showData();
-
     console.log("La página actual es: ", paginaActual);
 
     const navegarPaginaInicial = async() => {
