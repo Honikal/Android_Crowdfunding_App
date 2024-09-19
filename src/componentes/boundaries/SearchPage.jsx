@@ -12,19 +12,26 @@ import {
     Dimensions, 
     PixelRatio,
 
+    TouchableWithoutFeedback
 } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons'; // Importar FontAwesome para usar el icono de la lupa
 
 //Importamos el controlador
 import SearchPage_Ctrl from '../controllers/SearchProjectController';
-
 import { ScrollView } from "react-native-gesture-handler";
 
-// Datos de prueba para los proyectos (puedes reemplazarlo con una llamada real a la API)
+// Importamos el tab superior de la pantalla
+import UpTab from "./styleComponents/UpTab";
+import DownTab from "./styleComponents/DownTab";
 
-const SearchPage = () => {
+const SearchPage = ({ route }) => {
+    const { usuarioActual } = route.params;
+
+    const [dropdownVisible, setDropdownVisible] = useState(false);
+
     const [listaProyectos, setListaProyectos] = useState([]);
     const [filteredProyectos, setFilteredProyectos] = useState([]); // Estado para los proyectos filtrados
+    const [error, setError] = useState(null);
 
     const [query, setQuery] = useState(''); // Estado para la consulta de búsqueda
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -46,6 +53,12 @@ const SearchPage = () => {
 
     const obtenerPrimeraLetra = (nombre) => {
         return nombre.charAt(0).toUpperCase();
+    };
+
+    const handleOutsidePress = () => {
+        if (dropdownVisible) {
+            setDropdownVisible(false);
+        }
     };
 
     // Función para manejar la búsqueda en tiempo real
@@ -81,81 +94,85 @@ const SearchPage = () => {
 
     return (
         <View style={styles.container}>
+            <UpTab
+                usuarioActual={usuarioActual}
+                dropdownVisible={dropdownVisible}
+                setDropdownVisible={setDropdownVisible}
+            /> 
 
-            <View style={styles.searchContainer}>
-                <Text style={styles.title}>Buscar Proyecto</Text>
-                {/* Barra de búsqueda con icono de lupa */}
-                <View style={styles.inputContainer}>
-                    <FontAwesome name="search" style={styles.icon} />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Ingrese el nombre del proyecto"
-                        value={query}
-                        onChangeText={handleSearch}
-                    />
-                </View>
-            </View>
-            
-            <ScrollView horizontal style={styles.categoryContainer}>
-                {getUniqueCategories().map((category, index) => (
-                    <TouchableOpacity
-                        key={index}
-                        style={[
-                            styles.categoryButton,
-                            selectedCategory === category && styles.categoriaButtonSelected
-                        ]}
-                        onPress={() => handleFilterByCategory(category)}
+            <View style={styles.container}>
+                <Text style={styles.title}>Gestión de Proyectos</Text>
+
+                {error ? (
+                    <Text style={styles.errorText}>{error}</Text>
+                ) : (
+                    <ScrollView 
+                        keyboardShouldPersistTaps={"handled"} 
+                        contentContainerStyle={{ paddingBottom: normalize(20) }}  // Add padding for a smoother scroll
                     >
-                        <Text style={styles.categoriaButtonText}>{category}</Text>
-                    </TouchableOpacity>
-                ))}
-            </ScrollView>
-            
-            {/* Listar los proyectos filtrados */}
-            {filteredProyectos.length === 0 ? (
-                <Text style={styles.noResults}>No se encontraron los proyectos</Text>
-            ) : (
-                <ScrollView>
-                    {filteredProyectos.map((proyecto, index) => (
-                        <View key={index} style={styles.proyectoContainer}>
-                            <FlatList
-                                data={proyecto.media}
-                                keyExtractor={(item, index) => index.toString()}
-                                renderItem={({item}) => (
-                                    <Image
-                                        source={{ uri: item }}
-                                        style={styles.preview}
-                                    />
-                                )}
-                                horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                                style={styles.mediaPreviewContainer}
-                                nestedScrollEnabled={true}
-                            />
-                            
-                            <View style={styles.seccionProfile}>
-                                <View style={styles.profileIcon}>
-                                    <Text style={styles.profileText}>{obtenerPrimeraLetra(proyecto.creadorNombre)}</Text>
-                                </View>
-                                <View style={styles.columnProyect}>
-                                    <Text style={styles.titleProyect}>{proyecto.nombre}</Text>
-                                    <Text>{proyecto.creadorNombre} </Text>
-                                    {proyecto.estado_proyecto ? (
-                                        <Text>{proyecto.diasRestantes} días restantes   {proyecto.porcentajeFondos}% recaudado</Text>
-                                    ) : (
-                                        <Text>Aún por iniciar   {proyecto.porcentajeFondos}% recaudado</Text>
-                                    )}
-                                </View>
-                            </View>
-                            <Text style={styles.descriptionProyect} selectable={true}>{proyecto.descripcion} </Text>
+                        {listaProyectos.length > 0 ? (
+                            listaProyectos.map((proyecto, index) => (
+                                <View key={index} style={styles.proyectoContainer}>
+                                    {/* Horizontal scrolling for the project images */}
+                                    <ScrollView 
+                                        horizontal={true} 
+                                        showsHorizontalScrollIndicator={false} // Disable horizontal scroll indicator for better UI
+                                        style={styles.mediaPreviewContainer}
+                                    >
+                                        {proyecto.media && proyecto.media.length > 0 && proyecto.media.map((mediaItem, index) => (
+                                            <Image
+                                                key={index}
+                                                source={{ uri: mediaItem }}
+                                                style={styles.preview}
+                                            />
+                                        ))}
+                                    </ScrollView>
 
-                            <Text style={styles.categoriaButton}>{proyecto.categoria}</Text>
-                        </View>
-                    ))}
-                </ScrollView>
-            )}
-            
+                                    <View style={styles.columnProyect}>
+                                        <Text style={styles.titleProyect}>{proyecto.nombre}</Text>
+                                        <Text style={styles.creadorProyecto}>
+                                            {proyecto.creadorNombre}
+                                        </Text>
+                                        {proyecto.estado_proyecto ? (
+                                            <Text style={styles.diasRestantes}>
+                                                {proyecto.diasRestantes} días restantes   {proyecto.porcentajeFondos}% recaudado
+                                            </Text>
+                                        ) : (
+                                            <Text style={styles.diasRestantes}>
+                                                Aún por iniciar   {proyecto.porcentajeFondos}% recaudado
+                                            </Text>
+                                        )}
+                                    </View>
+
+                                    <Text style={styles.descriptionProyect} selectable={true}>
+                                        {proyecto.descripcion}
+                                    </Text>
+
+                                    <Text style={styles.categoriaButton}>{proyecto.categoria}</Text>
+
+                                    <View style={styles.actionButtonsContainer}>
+                                        <TouchableOpacity style={styles.editButton} onPress={() => handleVerDetallesProyecto(proyecto)}>
+                                            <Text style={styles.editButtonText}>Editar</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={styles.deleteButton}>
+                                            <Text style={styles.deleteButtonText}>Eliminar</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            ))
+                        ) : (
+                            <Text style={styles.emptyText}>No hay proyectos activos actualmente.</Text>
+                        )}
+                    </ScrollView>
+                )}
+            </View>
+
+            <DownTab
+                usuarioActual={usuarioActual}
+                paginaActual={"Busqueda"}
+            />
         </View>
+        
     );
 };
 
@@ -169,9 +186,13 @@ const normalize = (size) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 10,
         backgroundColor: '#A8CEFF',
         alignItems: 'center',
+    },
+
+    contextContainer:{
+        flex: 1,
+        alignItems: 'center'
     },
     
     searchContainer: {
@@ -182,7 +203,6 @@ const styles = StyleSheet.create({
         fontSize: 26,
         color: '#FFF',
         marginBottom: 20,
-        marginTop: 100, // Ajuste para mover el título más abajo
     },
     inputContainer: {
         flexDirection: 'row', // Para alinear el icono y el TextInput horizontalmente
@@ -191,7 +211,6 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: '#FFF',
         borderRadius: 20,
-        marginBottom: 20,
     },
     input: {
         flex: 1, // Ocupa el espacio restante del input
@@ -205,22 +224,26 @@ const styles = StyleSheet.create({
     },
 
     categoryContainer: {
-        height: normalize(90),
         width: '100%',
 
-        marginVertical: 10,
-        paddingVertical: 2,
+        marginVertical: 25,
+        marginTop: 0,
         flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
 
         borderWidth: 2,
         borderRadius: 16,
     },
     categoryButton: {
-        marginHorizontal: 5,
-        paddingVertical: 2,
-        paddingHorizontal: 14,
+        margin: 5,
+        height: normalize(45),
+        paddingVertical: 10,
+        paddingHorizontal: 16,
 
         justifyContent: 'center',
+        alignItems: 'center',
 
         backgroundColor: '#ECF7FD',
         color: '#0B3979',
@@ -255,6 +278,8 @@ const styles = StyleSheet.create({
 
     
     proyectoContainer: {
+        flex: 1,
+
         width: '100%',
         padding: 10,
         borderColor: '#A8CEFF',
@@ -302,8 +327,7 @@ const styles = StyleSheet.create({
     },
     mediaPreviewContainer: {
         marginVertical: normalize(10),
-        maxHeight: width * 0.6,
-
+        maxHeight: width,
         width: '100%',
     },
     preview: {
@@ -311,7 +335,6 @@ const styles = StyleSheet.create({
         height: width * 0.6,
         borderRadius: normalize(10),
         marginTop: normalize(15),
-
         resizeMode: 'contain',
     },
     categoriaButton: {
@@ -326,6 +349,13 @@ const styles = StyleSheet.create({
         borderRadius: 40,
         alignSelf: 'flex-start',
         maxWidth: '50%'
+    },
+
+    emptyText: {
+        fontSize: normalize(16),
+        color: '#707070',
+        textAlign: 'center',
+        marginVertical: normalize(20),
     },
 });
 

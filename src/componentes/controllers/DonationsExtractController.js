@@ -63,7 +63,7 @@ export default class DonationsExtract_Ctrl {
             if (this.#usuarioActual.isAdmin){
                 donaciones = await donacionEntidad.getDonations();
             } else {
-                donaciones = await donacionEntidad.getDonacionesByIdUsuario();
+                donaciones = await donacionEntidad.getDonacionesByIdUsuario(this.#usuarioActual.getIdUsuario);
             }
 
             for (const donacionData of donaciones) {

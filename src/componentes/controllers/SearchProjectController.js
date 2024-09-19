@@ -40,8 +40,6 @@ export default class SearchPage_Ctrl{
     */
     static checkQueryInProjectName = function(projectName, query) {
         const q = query.toLowerCase();
-        console.log("Value of query to test: ", q);
-
         return projectName.toLowerCase().includes(q);
     }
 

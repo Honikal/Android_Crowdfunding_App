@@ -48,6 +48,10 @@ const Login = () => {
         navigation.navigate('Registrar');
     };
 
+    const navigateToChangePassword = () => {
+        navigation.navigate('Cambiar Contraseña')
+    }
+
     const validarEmail = (email) => {
         // Usando expresiones regulares
         const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -81,6 +85,8 @@ const Login = () => {
             Alert.alert(error.message);
         }
     };
+
+    
 
     return (
         <View style={styles.container}>
@@ -117,7 +123,7 @@ const Login = () => {
                 <Text style={styles.buttonText}>Iniciar sesión</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.navigateContainer}>
+            <TouchableOpacity style={styles.navigateContainer} onPress={navigateToChangePassword}>
                 <Text style={styles.navigate}>¿Olvidaste tu contraseña?</Text>
             </TouchableOpacity>
 

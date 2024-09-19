@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 // Páginas de enrutamiento
 import Login from './src/componentes/boundaries/Login';
 import SignUp from './src/componentes/boundaries/SignUp';
+import ChangePassword from './src/componentes/boundaries/ChangePassword';
 import InitialPage from './src/componentes/boundaries/InitialPage';
 import ModifyAccount from './src/componentes/boundaries/ModifyAccount';
 import SearchPage from './src/componentes/boundaries/SearchPage';
@@ -14,6 +15,7 @@ import ProjectDetail from './src/componentes/boundaries/ProjectDetail';  // Impo
 import MyProjects from './src/componentes/boundaries/MyProjects';
 import Donate from './src/componentes/boundaries/Donate';
 import DonationsManagement from './src/componentes/boundaries/DonationsManagement';
+import ProjectsManagement from './src/componentes/boundaries/ProjectManagement';
 
 // Sistema para implementar navegación
 import { NavigationContainer } from '@react-navigation/native';
@@ -34,6 +36,11 @@ export default function App() {
         <Stack.Screen
           name='Registrar'
           component={SignUp}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='Cambiar Contraseña'
+          component={ChangePassword}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -117,6 +124,16 @@ export default function App() {
             usuarioActual: null,
           }}
         />
+
+        <Stack.Screen
+          name='Monitorear Proyectos'
+          component={ProjectsManagement}
+          options={{ headerShown: false }}
+          initialParams={{
+            usuarioActual: null,
+          }}
+        />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

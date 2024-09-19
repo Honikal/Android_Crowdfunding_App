@@ -87,7 +87,6 @@ const InitialPage = ({ route }) => {
 
     //Renderizar en caso que la cuenta esté desactivada
     if (!usuarioActual.isActiva){
-        console.log("Usuario actual inactivo");
         return (
             <View style={styles.disabledContainer}>
                 <View style={styles.disabledMessageContainer}>
@@ -107,59 +106,59 @@ const InitialPage = ({ route }) => {
     }
 
     return (
-        <TouchableWithoutFeedback onPress={handleOutsidePress}>
-            <View> 
-                <UpTab
-                    usuarioActual={usuarioActual}
-                    dropdownVisible={dropdownVisible}
-                    setDropdownVisible={setDropdownVisible}
-                />
-                <View style={styles.container}>
-                    <ScrollView>
-                        {listaProyectos.map((proyecto, index) => (
-                            <TouchableOpacity 
-                                key={index} 
-                                style={styles.proyectoContainer}
-                                onPress={() => handleProjectPress(proyecto)} // Añadimos el evento onPress
-                            >
-                                <ScrollView horizontal={true} style={styles.mediaPreviewContainer} nestedScrollEnabled={true}>
-                                    {proyecto.media && proyecto.media.length > 0 && proyecto.media.map((mediaItem, index) => (
-                                        <Image
-                                            key={index}
-                                            source={{ uri: mediaItem }}
-                                            style={styles.preview}
-                                        />
-                                    ))}
-                                </ScrollView>
+        <View> 
+            <UpTab
+                usuarioActual={usuarioActual}
+                dropdownVisible={dropdownVisible}
+                setDropdownVisible={setDropdownVisible}
+            />
+            <View style={styles.container}>
+                <ScrollView>
+                    {listaProyectos.map((proyecto, index) => (
+                        <View style={styles.proyectoContainer}>
+                            <ScrollView horizontal={true} style={styles.mediaPreviewContainer}>
+                                {proyecto.media && proyecto.media.length > 0 && proyecto.media.map((mediaItem, index) => (
+                                    <Image
+                                        key={index}
+                                        source={{ uri: mediaItem }}
+                                        style={styles.preview}
+                                    />
+                                ))}
+                            </ScrollView>
 
-                                <View style={styles.seccionProfile}>
-                                    <View style={styles.profileIcon}>
-                                        <Text style={styles.profileText}>{obtenerPrimeraLetra(proyecto.creadorNombre)}</Text>
-                                    </View>
-                                    <View style={styles.columnProyect}>
-                                        <Text style={styles.titleProyect}>{proyecto.nombre}</Text>
-                                        <Text>{proyecto.creadorNombre} </Text>
-                                        {proyecto.estado_proyecto ? (
-                                            <Text>{proyecto.diasRestantes} días restantes   {proyecto.porcentajeFondos}% recaudado</Text>
-                                        ) : (
-                                            <Text>Aún por iniciar   {proyecto.porcentajeFondos}% recaudado</Text>
-                                        )}
-                                    </View>
+                            <View style={styles.seccionProfile}>
+                                <View style={styles.profileIcon}>
+                                    <Text style={styles.profileText}>{obtenerPrimeraLetra(proyecto.creadorNombre)}</Text>
                                 </View>
-                                <Text style={styles.descriptionProyect} selectable={true}>{proyecto.descripcion} </Text>
-
+                                <View style={styles.columnProyect}>
+                                    <Text style={styles.titleProyect}>{proyecto.nombre}</Text>
+                                    <Text>{proyecto.creadorNombre} </Text>
+                                    {proyecto.estado_proyecto ? (
+                                        <Text>{proyecto.diasRestantes} días restantes   {proyecto.porcentajeFondos}% recaudado</Text>
+                                    ) : (
+                                        <Text>Aún por iniciar   {proyecto.porcentajeFondos}% recaudado</Text>
+                                    )}
+                                </View>
+                            </View>
+                            <Text style={styles.descriptionProyect} selectable={true}>{proyecto.descripcion} </Text>
+                            
+                            <View style={styles.sectionDonation}>
                                 <Text style={styles.categoriaButton}>{proyecto.categoria}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </ScrollView>
-                </View>
-                
-                <DownTab
-                    usuarioActual={usuarioActual}
-                    paginaActual={"Pagina Inicial"}
-                />
+                                <TouchableOpacity style={styles.donarBoton} onPress={() => handleProjectPress(proyecto)}>
+                                    <FontAwesome name="dollar" style={styles.iconDonate} />
+                                    <Text style={styles.donarBotonText}> Donar </Text>
+                                </TouchableOpacity>
+                            </View> 
+                        </View>
+                    ))}
+                </ScrollView>
             </View>
-        </TouchableWithoutFeedback>
+            
+            <DownTab
+                usuarioActual={usuarioActual}
+                paginaActual={"Pagina Inicial"}
+            />
+        </View>
     );
 };
 
@@ -235,8 +234,13 @@ const styles = StyleSheet.create({
         marginTop: normalize(15),
         resizeMode: 'contain',
     },
-    categoriaButton: {
+
+    sectionDonation: {
         marginTop: normalize(6),
+
+        flexDirection: 'row',
+    },
+    categoriaButton: {
         paddingVertical: 6,
         paddingHorizontal: 14,
         backgroundColor: '#ECF7FD',
@@ -247,6 +251,32 @@ const styles = StyleSheet.create({
         borderRadius: 40,
         alignSelf: 'flex-start',
         maxWidth: '50%',
+    },
+    donarBoton: {
+        flexDirection: 'row',
+
+        marginLeft: '15%',
+        paddingVertical: 4,
+        paddingHorizontal: 20,
+
+        alignItems: 'center',
+
+        backgroundColor: '#75A1DE',
+        borderRadius: 20,
+
+    },
+
+    donarBotonText: {
+        paddingHorizontal: 5,
+
+        fontSize: 15,
+        color: '#FEFEFE',
+    },
+
+    iconDonate: {
+        fontSize: 26,
+        color: '#FEFEFE',
+        textAlign: 'center',
     },
 
     //Cuenta inactiva
@@ -306,6 +336,7 @@ const styles = StyleSheet.create({
         color: '#FEFEFE',
         fontSize: 20,
     },
+
 });
 
 export default InitialPage;

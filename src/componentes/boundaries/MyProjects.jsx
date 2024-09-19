@@ -158,7 +158,6 @@ const styles = StyleSheet.create({
 
         marginVertical: normalize(5),
 
-        backgroundColor: '#ccc'
     },
 
     //Project Settings and Options Manager
@@ -192,7 +191,7 @@ const styles = StyleSheet.create({
         maxHeight: width * 0.6,
         width: '100%',
 
-        backgroundColor: '#c80212'
+        //backgroundColor: '#c80212'
     },
     preview: {
         width: width * 0.9,

@@ -8,16 +8,26 @@ import {
     Image,
     Dimensions,
     PixelRatio,
+    
+    TouchableWithoutFeedback,
+    Keyboard
 } from 'react-native';
 
 // Importamos el controlador para obtener los proyectos
 import InitialPage_Ctrl from "../controllers/InitialPageController";
 
+import UpTab from "./styleComponents/UpTab";
+import DownTab from "./styleComponents/DownTab";
+
 // Método de navegación
 import { useNavigation } from '@react-navigation/native';
 
-const MonitoreoProyectos = ({ route }) => {
+const ProjectsManagement = ({ route }) => {
     const { usuarioActual } = route.params;
+    
+    const [dropdownVisible, setDropdownVisible] = useState(false);
+
+
     const [proyectosActivos, setProyectosActivos] = useState([]);
     const [error, setError] = useState(null);
 
@@ -45,66 +55,77 @@ const MonitoreoProyectos = ({ route }) => {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Gestión de Proyectos</Text>
+        <View style={styles.fullPage}>
+            <UpTab
+                usuarioActual={usuarioActual}
+                dropdownVisible={dropdownVisible}
+                setDropdownVisible={setDropdownVisible}
+            /> 
+            <View style={styles.container}>
+                <Text style={styles.title}>Gestión de Proyectos</Text>
 
-            {error ? (
-                <Text style={styles.errorText}>{error}</Text>
-            ) : (
-                <ScrollView>
-                    {proyectosActivos.length > 0 ? (
-                        proyectosActivos.map((proyecto, index) => (
-                            <View key={index} style={styles.proyectoContainer}>
-                                <ScrollView horizontal={true} style={styles.mediaPreviewContainer}>
-                                    {proyecto.media && proyecto.media.length > 0 && proyecto.media.map((mediaItem, index) => (
-                                        <Image
-                                            key={index}
-                                            source={{ uri: mediaItem }}
-                                            style={styles.preview}
-                                        />
-                                    ))}
-                                </ScrollView>
+                {error ? (
+                    <Text style={styles.errorText}>{error}</Text>
+                ) : (
+                    <ScrollView keyboardShouldPersistTaps={"handled"}>
+                        {proyectosActivos.length > 0 ? (
+                            proyectosActivos.map((proyecto, index) => (
+                                <View key={index} style={styles.proyectoContainer}>
+                                    <ScrollView horizontal={true} style={styles.mediaPreviewContainer}>
+                                        {proyecto.media && proyecto.media.length > 0 && proyecto.media.map((mediaItem, index) => (
+                                            <Image
+                                                key={index}
+                                                source={{ uri: mediaItem }}
+                                                style={styles.preview}
+                                            />
+                                        ))}
+                                    </ScrollView>
 
-                                <View style={styles.columnProyect}>
-                                    <Text style={styles.titleProyect}>{proyecto.nombre}</Text>
+                                    <View style={styles.columnProyect}>
+                                        <Text style={styles.titleProyect}>{proyecto.nombre}</Text>
 
-                                    {/* Añadimos esta sección para el nombre del creador y días restantes */}
-                                    <Text style={styles.creadorProyecto}>
-                                        {proyecto.creadorNombre}
+                                        {/* Añadimos esta sección para el nombre del creador y días restantes */}
+                                        <Text style={styles.creadorProyecto}>
+                                            {proyecto.creadorNombre}
+                                        </Text>
+
+                                        {proyecto.estado_proyecto ? (
+                                            <Text style={styles.diasRestantes}>
+                                                {proyecto.diasRestantes} días restantes   {proyecto.porcentajeFondos}% recaudado
+                                            </Text>
+                                        ) : (
+                                            <Text style={styles.diasRestantes}>
+                                                Aún por iniciar   {proyecto.porcentajeFondos}% recaudado
+                                            </Text>
+                                        )}
+                                    </View>
+
+                                    <Text style={styles.descriptionProyect} selectable={true}>
+                                        {proyecto.descripcion}
                                     </Text>
 
-                                    {proyecto.estado_proyecto ? (
-                                        <Text style={styles.diasRestantes}>
-                                            {proyecto.diasRestantes} días restantes   {proyecto.porcentajeFondos}% recaudado
-                                        </Text>
-                                    ) : (
-                                        <Text style={styles.diasRestantes}>
-                                            Aún por iniciar   {proyecto.porcentajeFondos}% recaudado
-                                        </Text>
-                                    )}
+                                    <Text style={styles.categoriaButton}>{proyecto.categoria}</Text>
+
+                                    <View style={styles.actionButtonsContainer}>
+                                        <TouchableOpacity style={styles.editButton} onPress={() => handleVerDetallesProyecto(proyecto)}>
+                                            <Text style={styles.editButtonText}>Editar</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={styles.deleteButton}>
+                                            <Text style={styles.deleteButtonText}>Eliminar</Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
-
-                                <Text style={styles.descriptionProyect} selectable={true}>
-                                    {proyecto.descripcion}
-                                </Text>
-
-                                <Text style={styles.categoriaButton}>{proyecto.categoria}</Text>
-
-                                <View style={styles.actionButtonsContainer}>
-                                    <TouchableOpacity style={styles.editButton} onPress={() => handleVerDetallesProyecto(proyecto)}>
-                                        <Text style={styles.editButtonText}>Editar</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.deleteButton}>
-                                        <Text style={styles.deleteButtonText}>Eliminar</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        ))
-                    ) : (
-                        <Text style={styles.emptyText}>No hay proyectos activos actualmente.</Text>
-                    )}
-                </ScrollView>
-            )}
+                            ))
+                        ) : (
+                            <Text style={styles.emptyText}>No hay proyectos activos actualmente.</Text>
+                        )}
+                    </ScrollView>
+                )}
+            </View>
+            <DownTab
+                usuarioActual={usuarioActual}
+                paginaActual={""}
+            />
         </View>
     );
 };
@@ -117,6 +138,10 @@ const normalize = (size) => {
 };
 
 const styles = StyleSheet.create({
+    fullPage: {
+        flex: 1,
+        backgroundColor: '#F9F9F9',
+    },
     container: {
         flex: 1,
         padding: normalize(20),
@@ -127,7 +152,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#454986',
         marginBottom: normalize(20),
-        marginTop: normalize(30),
+        marginTop: normalize(10),
         textAlign: 'center',
     },
     proyectoContainer: {
@@ -159,7 +184,7 @@ const styles = StyleSheet.create({
     },
     mediaPreviewContainer: {
         marginVertical: normalize(10),
-        maxHeight: width * 0.6,
+        maxHeight: width,
         width: '100%',
     },
     preview: {
@@ -223,4 +248,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default MonitoreoProyectos;
+export default ProjectsManagement;

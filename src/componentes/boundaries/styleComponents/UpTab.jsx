@@ -58,7 +58,7 @@ export default UpTab = ({ usuarioActual, dropdownVisible, setDropdownVisible }) 
 
     const handleMonitorearProyectos = () => {
         setDropdownVisible(false);
-        navigation.navigate('Monitorear Proyectos', { usuarioActual });
+        navigation.navigate('Monitorear Proyectos', { usuarioActual: usuarioActual });
     }
 
     const handleMonitorearDonaciones = () => {
@@ -113,7 +113,7 @@ export default UpTab = ({ usuarioActual, dropdownVisible, setDropdownVisible }) 
                     
 
                     {/* Opciones solo visibles para el administrador */}
-                    {usuarioActual.isAdmin === true && (
+                    {usuarioActual.isAdmin === true ? (
                         <>
                             <TouchableOpacity onPress={handleGestionarUsuario} style={styles.dropdownItem}>
                                 <Text style={styles.dropdownItemText}>Gestionar Usuarios</Text>
@@ -131,6 +131,10 @@ export default UpTab = ({ usuarioActual, dropdownVisible, setDropdownVisible }) 
                                 <Text style={styles.dropdownItemText}>Ver Estadísticas</Text>
                             </TouchableOpacity>
                         </>
+                    ) : (
+                        <TouchableOpacity onPress={handleMonitorearDonaciones} style={styles.dropdownItem}>
+                            <Text style={styles.dropdownItemText}>Consultar Donaciones</Text>
+                        </TouchableOpacity>
                     )}
                     <TouchableOpacity onPress={handleLogOut} style={styles.dropdownItem}>
                         <Text style={styles.dropdownItemText}>Salir de sesión</Text>
@@ -160,7 +164,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#ECF7FD',
         borderWidth: 1,
         borderColor: '#ccc',
+        //Android
         elevation: 10,
+
+        //En IOS
         shadowColor: '#000',
         shadowOpacity: 0.2,
         shadowOffset: { width: 0, height: 4 },

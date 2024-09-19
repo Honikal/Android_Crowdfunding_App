@@ -130,14 +130,14 @@ export default class Usuario{
          * setter tipo de usuario según proyectos
          * @param {boolean} value     - Valor de entrada para indicar si es admin o no
         */
-         this.#admin = value;
+        this.#admin = value;
     }
     set setActiva(value){
         /**
          * setter estado de cuenta
          * @param {boolean} value     - Valor de entrada para indicar si la cuenta está activa o no
         */
-         this.#activa = value;
+        this.#activa = value;
     }
 
     showData(){

@@ -69,6 +69,38 @@ export default class UsuarioEntidad {
         }
     }
 
+    /**
+     * Función encargada de retornar la información de un usuario específico como tal
+     * @async
+     * @param {String} email         - Correo del presunto usuario, para cambiar contraseña
+     * @returns {Promise<Usuario>}   - Retorna true si encuentra un usuario con ese correo, sino, no retorna false
+     */
+    async getUsuarioByEmail(email) {
+        //Buscamos directamente en el punto de referencia
+        try {
+            const snapshot = await get(this.#dbRef)
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                const usuarios = Object.keys(userData).map(id => {
+                    return {
+                        ...userData[id],
+                        idUsuario: id
+                    }
+                })
+
+                console.log("Si extrae los usuarios, no hay error hasta acá");
+                
+                const usuario = usuarios.find(user => user.correo === email);
+                return usuario;
+            } else {
+                return [];
+            }
+        } catch (error) {
+            console.error("Error desde la capa entidad: ", error);
+            throw error;
+        }
+    }
+
     //ADD Usuario
     /**
      * Función encargada de agregar un usuario a la base de datos

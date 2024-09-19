@@ -29,7 +29,7 @@ export default DownTabProyecto = ({ usuarioActual, paginaActual }) => {
 
     const navegarBusqueda = async() => {
         if (paginaActual !== 'Busqueda'){
-            navigation.navigate('Busqueda', { usuarioActual: usuarioActual, });
+            navigation.navigate('Busqueda', { usuarioActual: usuarioActual });
         }
     }
 
