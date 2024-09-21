@@ -145,7 +145,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: normalize(20),
-        backgroundColor: '#F9F9F9',
     },
     title: {
         fontSize: normalize(24),

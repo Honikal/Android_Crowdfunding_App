@@ -106,7 +106,7 @@ const InitialPage = ({ route }) => {
     }
 
     return (
-        <View> 
+        <View style={styles.fullPage}> 
             <UpTab
                 usuarioActual={usuarioActual}
                 dropdownVisible={dropdownVisible}
@@ -153,7 +153,6 @@ const InitialPage = ({ route }) => {
                     ))}
                 </ScrollView>
             </View>
-            
             <DownTab
                 usuarioActual={usuarioActual}
                 paginaActual={"Pagina Inicial"}
@@ -171,7 +170,12 @@ const normalize = (size) => {
 
 const styles = StyleSheet.create({
     //Cuenta activa
+    fullPage: {
+        flex: 1,
+        backgroundColor: '#F9F9F9',
+    },
     container: {
+        flex: 1, 
         width: '100%',
         height: '80%',
         flexGrow: 1,

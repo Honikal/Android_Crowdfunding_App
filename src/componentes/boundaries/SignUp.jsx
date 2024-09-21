@@ -77,13 +77,18 @@ const SignUp = () => {
         setFormSubmited(true);
 
         if (!nombreCompleto.trim() || !cedula.trim() || !correo.trim() || !telefono.trim() ||
-         !password.trim() || !confirmPassword) {
+         !password.trim() || !confirmPassword || !dineroInicial) {
             Alert.alert('Campos obligatorios', 'Por favor complete todos los campos');
             return;
         }
 
         if (!validarEmail(correo)) {
             Alert.alert('Formato de correo electrónico', 'Por favor ingrese un correo electrónico válido');
+            return;
+        }
+
+        if (isNaN(parseFloat(dineroInicial)) || parseFloat(dineroInicial) < 0){
+            Alert.alert('Formato de dinero', 'Por favor ingrese un monto de dinero inicial conformado por numeros positivos');
             return;
         }
 
@@ -101,9 +106,6 @@ const SignUp = () => {
             const registrar = new SignUp_Ctrl(nombreCompleto, cedula, areaTrabajo, parseFloat(dineroInicial),
             telefono, correo, password);
             const usuarioActual = await registrar.registrarUsuario();
-
-            console.log("Usuario registrado correctamente");
-            usuarioActual.showData();
 
             Alert.alert("Usuario registrado", "El usuario ha sido registrado exitosamente");
             navigation.navigate('Pagina Inicial', { usuarioActual: usuarioActual });
@@ -226,6 +228,12 @@ const SignUp = () => {
                             value={dineroInicial}
                         />
                     </View>
+                    {!dineroInicial && formSubmited ? (
+                        <View style={styles.errorContainer}>
+                            <FontAwesome name="exclamation-circle" style={styles.errorIcon} />
+                            <Text style={styles.errorText}>Debe ingresar un monto inicial</Text>
+                        </View>
+                    ) : null}
 
                     <View style={[styles.inputContainer, !password && (formSubmited ? styles.required_input : styles.input)]}>
                         <FontAwesome name="lock" style={styles.icon} />

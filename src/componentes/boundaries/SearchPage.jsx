@@ -31,7 +31,6 @@ const SearchPage = ({ route }) => {
 
     const [listaProyectos, setListaProyectos] = useState([]);
     const [filteredProyectos, setFilteredProyectos] = useState([]); // Estado para los proyectos filtrados
-    const [error, setError] = useState(null);
 
     const [query, setQuery] = useState(''); // Estado para la consulta de búsqueda
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -100,69 +99,72 @@ const SearchPage = ({ route }) => {
                 setDropdownVisible={setDropdownVisible}
             /> 
 
-            <View style={styles.container}>
-                <Text style={styles.title}>Gestión de Proyectos</Text>
-
-                {error ? (
-                    <Text style={styles.errorText}>{error}</Text>
+            <View style = {styles.contextContainer}>
+                <View style={styles.searchContainer}>
+                    <Text style={styles.title}>Buscar Proyecto</Text>
+                    {/* Barra de búsqueda con icono de lupa */}
+                    <View style={styles.inputContainer}>
+                        <FontAwesome name="search" style={styles.icon} />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Ingrese el nombre del proyecto"
+                            value={query}
+                            onChangeText={handleSearch}
+                        />
+                    </View>
+                </View>
+                
+                <View style={styles.categoryContainer}>
+                    {getUniqueCategories().map((category, index) => (
+                        <TouchableOpacity
+                            key={index}
+                            style={[
+                                styles.categoryButton,
+                                selectedCategory === category && styles.categoriaButtonSelected
+                            ]}
+                            onPress={() => handleFilterByCategory(category)}
+                        >
+                            <Text style={styles.categoriaButtonText}>{category}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+                
+                {/* Listar los proyectos filtrados */}
+                {filteredProyectos.length === 0 ? (
+                    <Text style={styles.noResults}>No se encontraron los proyectos</Text>
                 ) : (
-                    <ScrollView 
-                        keyboardShouldPersistTaps={"handled"} 
-                        contentContainerStyle={{ paddingBottom: normalize(20) }}  // Add padding for a smoother scroll
-                    >
-                        {listaProyectos.length > 0 ? (
-                            listaProyectos.map((proyecto, index) => (
-                                <View key={index} style={styles.proyectoContainer}>
-                                    {/* Horizontal scrolling for the project images */}
-                                    <ScrollView 
-                                        horizontal={true} 
-                                        showsHorizontalScrollIndicator={false} // Disable horizontal scroll indicator for better UI
-                                        style={styles.mediaPreviewContainer}
-                                    >
-                                        {proyecto.media && proyecto.media.length > 0 && proyecto.media.map((mediaItem, index) => (
-                                            <Image
-                                                key={index}
-                                                source={{ uri: mediaItem }}
-                                                style={styles.preview}
-                                            />
-                                        ))}
-                                    </ScrollView>
-
+                    <ScrollView keyboardShouldPersistTaps={"handled"}>
+                        {filteredProyectos.map((proyecto, index) => (
+                            <View key={index} style={styles.proyectoContainer}>
+                                <ScrollView horizontal={true} style={styles.mediaPreviewContainer}>
+                                    {proyecto.media && proyecto.media.length > 0 && proyecto.media.map((mediaItem, index) => (
+                                        <Image
+                                            key={index}
+                                            source={{ uri: mediaItem }}
+                                            style={styles.preview}
+                                        />
+                                    ))}
+                                </ScrollView>
+                                
+                                <View style={styles.seccionProfile}>
+                                    <View style={styles.profileIcon}>
+                                        <Text style={styles.profileText}>{obtenerPrimeraLetra(proyecto.creadorNombre)}</Text>
+                                    </View>
                                     <View style={styles.columnProyect}>
                                         <Text style={styles.titleProyect}>{proyecto.nombre}</Text>
-                                        <Text style={styles.creadorProyecto}>
-                                            {proyecto.creadorNombre}
-                                        </Text>
+                                        <Text>{proyecto.creadorNombre} </Text>
                                         {proyecto.estado_proyecto ? (
-                                            <Text style={styles.diasRestantes}>
-                                                {proyecto.diasRestantes} días restantes   {proyecto.porcentajeFondos}% recaudado
-                                            </Text>
+                                            <Text>{proyecto.diasRestantes} días restantes   {proyecto.porcentajeFondos}% recaudado</Text>
                                         ) : (
-                                            <Text style={styles.diasRestantes}>
-                                                Aún por iniciar   {proyecto.porcentajeFondos}% recaudado
-                                            </Text>
+                                            <Text>Aún por iniciar   {proyecto.porcentajeFondos}% recaudado</Text>
                                         )}
                                     </View>
-
-                                    <Text style={styles.descriptionProyect} selectable={true}>
-                                        {proyecto.descripcion}
-                                    </Text>
-
-                                    <Text style={styles.categoriaButton}>{proyecto.categoria}</Text>
-
-                                    <View style={styles.actionButtonsContainer}>
-                                        <TouchableOpacity style={styles.editButton} onPress={() => handleVerDetallesProyecto(proyecto)}>
-                                            <Text style={styles.editButtonText}>Editar</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={styles.deleteButton}>
-                                            <Text style={styles.deleteButtonText}>Eliminar</Text>
-                                        </TouchableOpacity>
-                                    </View>
                                 </View>
-                            ))
-                        ) : (
-                            <Text style={styles.emptyText}>No hay proyectos activos actualmente.</Text>
-                        )}
+                                <Text style={styles.descriptionProyect} selectable={true}>{proyecto.descripcion} </Text>
+
+                                <Text style={styles.categoriaButton}>{proyecto.categoria}</Text>
+                            </View>
+                        ))}
                     </ScrollView>
                 )}
             </View>
@@ -349,13 +351,6 @@ const styles = StyleSheet.create({
         borderRadius: 40,
         alignSelf: 'flex-start',
         maxWidth: '50%'
-    },
-
-    emptyText: {
-        fontSize: normalize(16),
-        color: '#707070',
-        textAlign: 'center',
-        marginVertical: normalize(20),
     },
 });
 

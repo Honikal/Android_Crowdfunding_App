@@ -102,7 +102,7 @@ export default class SignUp_Ctrl{
                 console.log(this.#usuario.showData());
 
                 //Enviamos el correo una vez se ha registrado el usuario
-                const emailSender = new EmailSender();
+                //const emailSender = new EmailSender();
 
                 /*
                 emailSender.sendEmail(

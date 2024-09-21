@@ -58,40 +58,44 @@ const DonationsManagement = ({ route }) => {
     console.log("Datos de lista de donaciones: ", listaDonaciones);
 
     return (
-        <TouchableWithoutFeedback onPress={handleOutsidePress}>
-            <View style={styles.fullPage}>
-                <UpTab
-                    usuarioActual={usuarioActual}
-                    dropdownVisible={dropdownVisible}
-                    setDropdownVisible={setDropdownVisible}
-                />
-            
-                <View style={styles.container}>
-                    {/* Listamos todas las donaciones*/}
-                    {listaDonaciones.length === 0 ? (
-                        <Text style={styles.noResults}>No existen donaciones en el sistema</Text>
-                    ) : (
-                        <ScrollView style={styles.scroller}>
-                            {listaDonaciones.map((donaciones, index) => (
-                                <View key={index} style={styles.donacionesContainer}>
-                                    <FontAwesome name="file-text" style={styles.icon} />
-                                    <View style={styles.infoDonationContainer}>
-                                        <Text style={[styles.infoDonationText, styles.infoDescription]}>{donaciones.projectoName} </Text>
-                                        <Text style={styles.infoDonationText}>Fecha de donación: {donaciones.fecha_donacion}</Text>
-                                        <Text style={styles.infoDonationText}>Monto de donación: {donaciones.monto}$</Text>
-                                    </View>
+        <View style={styles.fullPage}>
+            <UpTab
+                usuarioActual={usuarioActual}
+                dropdownVisible={dropdownVisible}
+                setDropdownVisible={setDropdownVisible}
+            />
+        
+            <View style={styles.container}>
+                {/* Listamos todas las donaciones*/}
+                {listaDonaciones.length === 0 ? (
+                    <Text style={styles.noResults}>No existen donaciones en el sistema</Text>
+                ) : (
+                    <ScrollView style={styles.scroller}>
+                        {listaDonaciones.map((donaciones, index) => (
+                            <View key={index} style={styles.donacionesContainer}>
+                                <FontAwesome name="file-text" style={styles.icon} />
+                                <View style={styles.infoDonationContainer}>
+                                    <Text style={[styles.infoDonationText, styles.infoDescription]}>{donaciones.projectoName} </Text>
+                                    {usuarioActual.isAdmin && (
+                                        <Text style={[styles.infoDonationText, styles.infoDonadorText]}>
+                                            Encargado de la donación:
+                                            <Text style={styles.infoDonadorName}> {donaciones.donadorName}</Text>
+                                        </Text>
+                                    )}
+                                    <Text style={styles.infoDonationText}>Fecha de donación: {donaciones.fecha_donacion}</Text>
+                                    <Text style={styles.infoDonationText}>Monto de donación: {donaciones.monto}$</Text>
                                 </View>
-                            ))}
-                        </ScrollView>
-                    )}
-                </View>
-
-                <DownTab
-                    usuarioActual={usuarioActual}
-                    paginaActual={""}
-                />
+                            </View>
+                        ))}
+                    </ScrollView>
+                )}
             </View>
-        </TouchableWithoutFeedback>
+
+            <DownTab
+                usuarioActual={usuarioActual}
+                paginaActual={""}
+            />
+        </View>
     );
 };
 
@@ -161,13 +165,20 @@ const styles = StyleSheet.create({
     infoDonationText: {
         flexWrap: 'wrap'
     },
+    infoDonadorText: {
+        width: '80%',
+        fontSize: 14,
+        color: '#0B3979',
+    },
+    infoDonadorName: {
+        fontStyle: 'italic'
+    },
     infoDescription: {
+        width: '80%',
         fontSize: 16,
         fontWeight: 'bold',
         color: '#0B3979',
     },
-
-    
     
 });
 

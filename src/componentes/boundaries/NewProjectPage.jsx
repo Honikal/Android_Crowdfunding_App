@@ -123,8 +123,7 @@ const CreateProject = ( {route} ) => {
             proyectoActual.showData();
 
             Alert.alert("Proyecto Creado", "El proyecto ha sido creado exitosamente.");
-
-            navigation.navigate('Pagina Inicial', { usuarioActual: usuario });
+            navigation.navigate('Pagina Inicial', { usuarioActual: usuarioActual });
         } catch (error) {
             console.error("Error durante creación del proyecto:", error.message);
             Alert.alert(error.message);
